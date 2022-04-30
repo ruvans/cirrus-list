@@ -5,6 +5,8 @@
 #include <QDir>
 #include <QString>
 #include <QMessageLogger>
+#include <QDateTime>
+#include <QFile>
 
 class Mapmanager
 {
@@ -13,7 +15,11 @@ public:
 
     bool makeNewMap(QString mapName);
 private:
-    QString getMapsDir();
+    bool establishMapsDir();
+    QString generateMapName();
+
+
+    QString getMapsDirPath();
 };
 
 #endif // MAPMANAGER_H
