@@ -17,7 +17,7 @@
    <widget class="QLabel" name="labelTitle">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>320</x>
       <y>0</y>
       <width>141</width>
       <height>61</height>
@@ -27,7 +27,21 @@
      <string>Cirrus List</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="newButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>101</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New</string>
+    </property>
+   </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -44,7 +58,6 @@
    </widget>
    <addaction name="menuNew"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
