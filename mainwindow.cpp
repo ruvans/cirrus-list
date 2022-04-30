@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QInputDialog>
+#include "mapmanager.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,6 +27,10 @@ void MainWindow::on_newButton_clicked()
     if (ok && !text.isEmpty())
     {
          //open new
+        qInfo("Creating new cirrusList for: %s", qUtf8Printable(text));
+        Mapmanager mapman;
+        mapman.makeNewMap(text);
+
     }
 
 }
