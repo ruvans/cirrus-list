@@ -8,12 +8,28 @@
 #include <QDateTime>
 #include <QFile>
 
+struct mapElements
+{
+    inline const static QString MAP_ELEMENT="map";
+    inline const static QString MAP_DESCRIPTION="mapDesc";
+
+};
+struct mapAttributes
+{
+    inline const static QString MAP_SUBJECT="mapSubject";
+};
+
 class Mapmanager
 {
+
+
 public:
     Mapmanager();
 
-    bool makeNewMap(QString mapName);
+    QString makeNewMap(QString mapName);
+
+    QString getMapSubject(QString mapPath);
+
 private:
     bool establishMapsDir();
     QString generateMapName();

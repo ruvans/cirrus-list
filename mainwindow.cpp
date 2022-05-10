@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mapmanager.h"
+#include "maplistviewer.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,12 +25,21 @@ void MainWindow::on_newButton_clicked()
                                          /*text display mode*/QLineEdit::Normal,
                                          /*sample text*/tr(""), &ok);
 
-    if (ok && !text.isEmpty())
+    if (ok && text.isEmpty() == false)
     {
          //open new
         qInfo("Creating new cirrusList for: %s", qUtf8Printable(text));
         Mapmanager mapman;
-        mapman.makeNewMap(text);
+        QString newMap = mapman.makeNewMap(text);
+
+        if (newMap.isEmpty() == false)
+        {
+            MapListViewer *mapListViewer = new MapListViewer(newMap, ui->scrollArea);
+            mapListViewer->setBackgroundRole(QPalette::Dark);
+            mapListViewer->resize(200, 200);
+            ui->scrollArea->setWidget(mapListViewer);
+            ui->scrollArea->show();
+        }
 
     }
 

@@ -5,11 +5,11 @@ Mapmanager::Mapmanager()
 
 }
 
-bool Mapmanager::makeNewMap(QString mapName)
+QString Mapmanager::makeNewMap(QString mapName)
 {
     if (establishMapsDir() == false)
     {
-        return false;
+        return "";
     }
 
     QString mapSaveName = generateMapName();
@@ -21,13 +21,39 @@ bool Mapmanager::makeNewMap(QString mapName)
     QXmlStreamWriter *xmlWriter = new QXmlStreamWriter(&file);
     xmlWriter->writeStartDocument();
     xmlWriter->setAutoFormatting(true);
-    //xmlWriter->writeStartElement("mapDetails");
-    xmlWriter->writeTextElement("mapDetails", mapName);
+    xmlWriter->writeStartElement(mapElements::MAP_ELEMENT);
+    xmlWriter->writeStartElement(mapElements::MAP_DESCRIPTION);
+    xmlWriter->writeTextElement(mapAttributes::MAP_SUBJECT, mapName);
     xmlWriter->writeEndElement();
     xmlWriter->writeEndDocument();
     file.close();
 
-    return true;
+    return mapSavePath;
+}
+
+QString Mapmanager::getMapSubject(QString mapPath)
+{
+    QString returnStr="";
+    QFile file(mapPath);
+    file.open(QIODevice::ReadOnly);
+
+    QXmlStreamReader xmlReader(&file);
+
+    while (!xmlReader.atEnd()) {
+        if(xmlReader.name() == mapAttributes::MAP_SUBJECT)
+        {
+            returnStr = xmlReader.readElementText();
+            break;
+        }
+        xmlReader.readNext();
+
+     }
+     if (xmlReader.hasError()) {
+        //don't panic DONT PANIC
+     }
+
+    file.close();
+    return returnStr;
 }
 
 bool Mapmanager::establishMapsDir()
