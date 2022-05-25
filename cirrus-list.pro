@@ -12,11 +12,13 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     maplistviewer.cpp \
+    maploaddisplay.cpp \
     mapmanager.cpp
 
 HEADERS += \
     mainwindow.h \
     maplistviewer.h \
+    maploaddisplay.h \
     mapmanager.h
 
 FORMS += \

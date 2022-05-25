@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QInputDialog>
 #include <QMessageLogger>
+#include "mapmanager.h"
+#include "maplistviewer.h"
+#include "maploaddisplay.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +22,7 @@ public:
 
 private slots:
     void on_newButton_clicked();
+    void on_loadButton_clicked();
 
 private:
     Ui::MainWindow *ui;

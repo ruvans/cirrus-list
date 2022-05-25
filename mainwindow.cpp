@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mapmanager.h"
-#include "maplistviewer.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -45,3 +44,11 @@ void MainWindow::on_newButton_clicked()
 
 }
 
+void MainWindow::on_loadButton_clicked()
+{
+    MapLoadDisplay *mapLoadDisplay = new MapLoadDisplay(ui->scrollArea);
+    mapLoadDisplay->setBackgroundRole(QPalette::Dark);
+    mapLoadDisplay->resize(200, 200);
+    ui->scrollArea->setWidget(mapLoadDisplay);
+    ui->scrollArea->show();
+}
