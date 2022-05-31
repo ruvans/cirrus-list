@@ -8,13 +8,22 @@
 #include <QDateTime>
 #include <QFile>
 
-struct mapElements
+struct mapData
+{
+    QString mapFilename;
+    QString mapPath;
+    QString mapSubject;
+    QString lastUpdated;//probably not a string
+    //QString cloudColour;//maybe
+};
+
+namespace mapElements
 {
     inline const static QString MAP_ELEMENT="map";
     inline const static QString MAP_DESCRIPTION="mapDesc";
 
 };
-struct mapAttributes
+namespace mapAttributes
 {
     inline const static QString MAP_SUBJECT="mapSubject";
 };
@@ -29,6 +38,10 @@ public:
     QString makeNewMap(QString mapName);
 
     QString getMapSubject(QString mapPath);
+
+    std::vector<mapData> getAvailableMaps();
+
+
 
 private:
     bool establishMapsDir();
