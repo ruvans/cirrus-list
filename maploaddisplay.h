@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QListWidget>
 #include "mapmanager.h"
 
 class MapLoadDisplay : public QWidget
@@ -16,7 +17,7 @@ signals:
 
 private:
 std::unique_ptr<QHBoxLayout> m_layout;
-std::unique_ptr<QLabel> m_mainLabel;
+std::unique_ptr<QListWidget> m_listWidget;
 };
 
 #endif // MAPLOADDISPLAY_H

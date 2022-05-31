@@ -7,10 +7,15 @@ MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
     Mapmanager mapman;
     std::vector<mapData> maps = mapman.getAvailableMaps();
 
-    m_mainLabel = std::make_unique<QLabel>();
-    m_mainLabel->setText(maps.front().mapSubject);
-    m_mainLabel->setAlignment(Qt::AlignCenter);
-    m_mainLabel->setMinimumWidth(100);// You can set other properties similarly
+    m_listWidget = std::make_unique<QListWidget>();
+    m_listWidget->setMinimumWidth(100);
+    m_listWidget->setMinimumHeight(100);
 
-    m_layout->addWidget(m_mainLabel.get());
+    for (mapData& map : maps)
+    {
+        m_listWidget->addItem(map.mapSubject);
+    }
+
+
+    m_layout->addWidget(m_listWidget.get());
 }

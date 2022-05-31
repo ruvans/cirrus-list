@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QHBoxLayout>
+
 #include "mapmanager.h"
 
 class MapListViewer : public QWidget

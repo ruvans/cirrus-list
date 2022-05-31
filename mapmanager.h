@@ -30,8 +30,6 @@ namespace mapAttributes
 
 class Mapmanager
 {
-
-
 public:
     Mapmanager();
 
