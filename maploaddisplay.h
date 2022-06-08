@@ -14,6 +14,8 @@ public:
     explicit MapLoadDisplay(QWidget *parent = nullptr);
 
 signals:
+private slots:
+void on_itemDoubleClicked(QListWidgetItem *item);
 
 private:
 std::unique_ptr<QHBoxLayout> m_layout;
