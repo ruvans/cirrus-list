@@ -90,15 +90,15 @@ QString Mapmanager::getMapsDirPath()
     return mapsDir;
 }
 
-std::vector<mapData> Mapmanager::getAvailableMaps()
+std::vector<MapData> Mapmanager::getAvailableMaps()
 {
-    std::vector<mapData> mapsData;
+    std::vector<MapData> mapsData;
     QDir mapsDir (getMapsDirPath());
     QStringList mapsList = mapsDir.entryList(QDir::Files,QDir::Time); //find all files, in order of modified time
     for (QString& map : mapsList)
     {
         qInfo("adding map data for map: %s", qUtf8Printable(map));
-        mapData newData;
+        MapData newData;
         newData.mapPath = getMapsDirPath().append(QDir::separator()).append(map);
         newData.mapFilename = map;
         newData.mapSubject = getMapSubject(newData.mapPath);

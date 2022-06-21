@@ -8,7 +8,7 @@
 #include <QDateTime>
 #include <QFile>
 
-struct mapData
+struct MapData
 {
     QString mapFilename;
     QString mapPath;
@@ -37,7 +37,7 @@ public:
 
     QString getMapSubject(QString mapPath);
 
-    std::vector<mapData> getAvailableMaps();
+    std::vector<MapData> getAvailableMaps();
 
 
 
