@@ -11,7 +11,7 @@ class MapListViewer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MapListViewer(QString mapPath, QWidget *parent = nullptr);
+    explicit MapListViewer(QString const& mapPath, QWidget *parent = nullptr);
 
 signals:
 

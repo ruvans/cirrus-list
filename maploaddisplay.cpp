@@ -14,11 +14,13 @@ MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
 
     for (MapData& map : maps)
     {
-        MapListWidgetItem* widgetItem= new MapListWidgetItem(map);
-        QListWidgetItem* item = new QListWidgetItem;
-        item->setSizeHint(QSize(item->sizeHint().width(), 50));
-        m_listWidget->addItem(item);
-        m_listWidget->setItemWidget(item, widgetItem);
+        //MapListWidgetItem* widgetItem= new MapListWidgetItem(map);
+        //QListWidgetItem* item = new QListWidgetItem;
+        m_mapListWidgetItems.push_back(new MapListWidgetItem(map));
+        m_listItems.push_back(new QListWidgetItem);
+        m_listItems.back()->setSizeHint(QSize(m_listItems.back()->sizeHint().width(), 50));
+        m_listWidget->addItem(m_listItems.back());
+        m_listWidget->setItemWidget(m_listItems.back(), m_mapListWidgetItems.back());
     }
     m_layout->addWidget(m_listWidget.get());
 
@@ -28,6 +30,18 @@ MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
 
 MapLoadDisplay::~MapLoadDisplay()
 {
+    for (auto item : m_listItems)
+    {
+        delete item;
+    }
+    for (auto item: m_mapListWidgetItems)
+    {
+        delete item;
+    }
+    m_listItems.clear();
+    m_mapListWidgetItems.clear();
+    m_layout.release();
+    m_listWidget.release();
 }
 
 void MapLoadDisplay::on_itemDoubleClicked(QListWidgetItem *item)
@@ -36,5 +50,6 @@ void MapLoadDisplay::on_itemDoubleClicked(QListWidgetItem *item)
     if (mapItem != nullptr)
     {
         qInfo("file to load is %s", qUtf8Printable(mapItem->m_itemMapData.mapFilename));
+        emit mapItemClicked(mapItem->m_itemMapData.mapPath);
     }
 }

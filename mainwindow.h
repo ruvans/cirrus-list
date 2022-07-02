@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QMessageLogger>
 #include "mapmanager.h"
 #include "maplistviewer.h"
@@ -23,9 +24,14 @@ public:
 private slots:
     void on_newButton_clicked();
     void on_loadButton_clicked();
+    void on_mapToLoadChosen(QString mapFile);
 
 private:
     Ui::MainWindow *ui;
+    void showMap(QString mapFile);
+    //MapLoadDisplay *m_mapLoadDisplay;
+    MapLoadDisplay m_mapLoadDisplay;
+    std::unique_ptr<MapListViewer> m_mapViewer;
 
 
 };

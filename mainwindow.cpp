@@ -7,6 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //m_mapLoadDisplay = new MapLoadDisplay(ui->scrollArea);
+    m_mapLoadDisplay.setBackgroundRole(QPalette::Dark);
+    m_mapLoadDisplay.resize(200, 200);
+
+    QObject::connect(&m_mapLoadDisplay, &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
+
 }
 
 MainWindow::~MainWindow()
@@ -33,22 +39,42 @@ void MainWindow::on_newButton_clicked()
 
         if (newMap.isEmpty() == false)
         {
-            MapListViewer *mapListViewer = new MapListViewer(newMap, ui->scrollArea);
-            mapListViewer->setBackgroundRole(QPalette::Dark);
-            mapListViewer->resize(200, 200);
-            ui->scrollArea->setWidget(mapListViewer);
-            ui->scrollArea->show();
+            showMap(newMap);
         }
-
     }
-
 }
 
 void MainWindow::on_loadButton_clicked()
 {
-    MapLoadDisplay *mapLoadDisplay = new MapLoadDisplay(ui->scrollArea);
-    mapLoadDisplay->setBackgroundRole(QPalette::Dark);
-    mapLoadDisplay->resize(200, 200);
-    ui->scrollArea->setWidget(mapLoadDisplay);
+    //todo: m_mapLoadDisplay->update();
+    ui->scrollArea->setWidget(&m_mapLoadDisplay);
     ui->scrollArea->show();
+}
+
+void MainWindow::on_mapToLoadChosen(QString mapFile)
+{
+    if (mapFile.isEmpty() == false)
+    {
+        showMap(mapFile);
+    }
+}
+
+void MainWindow::showMap(QString mapPath)
+{
+    QFile file(mapPath);
+    if (!file.exists())
+    {
+        QMessageBox::warning(this,"Error MW1","Cannot find file at path: " + mapPath);
+        return;
+    }
+
+    //MapListViewer *mapListViewer = new MapListViewer(mapPath, ui->scrollArea);
+    m_mapViewer.release();
+    m_mapViewer = std::make_unique<MapListViewer>(mapPath, ui->scrollArea);
+    m_mapViewer->setBackgroundRole(QPalette::Dark);
+    m_mapViewer->resize(200, 200);
+    ui->scrollArea->takeWidget();
+    ui->scrollArea->setWidget(m_mapViewer.get());
+    ui->scrollArea->show();
+
 }

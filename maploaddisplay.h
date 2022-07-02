@@ -35,8 +35,6 @@ public:
     std::unique_ptr<QHBoxLayout> m_itemLayout;
 };
 
-
-
 class MapLoadDisplay : public QWidget
 {
     Q_OBJECT
@@ -44,13 +42,19 @@ public:
     explicit MapLoadDisplay(QWidget *parent = nullptr);
     ~MapLoadDisplay();
 
-signals:
 private slots:
 void on_itemDoubleClicked(QListWidgetItem *item);
+
+
+public slots:
+signals:
+void mapItemClicked(QString mapToLoad);
 
 private:
 std::unique_ptr<QHBoxLayout> m_layout;
 std::unique_ptr<QListWidget> m_listWidget;
+std::vector<QListWidgetItem*> m_listItems;
+std::vector<MapListWidgetItem*> m_mapListWidgetItems;
 };
 
 #endif // MAPLOADDISPLAY_H
