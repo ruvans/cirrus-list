@@ -7,12 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //m_mapLoadDisplay = new MapLoadDisplay(ui->scrollArea);
-    m_mapLoadDisplay.setBackgroundRole(QPalette::Dark);
-    m_mapLoadDisplay.resize(200, 200);
-
-    QObject::connect(&m_mapLoadDisplay, &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
-
 }
 
 MainWindow::~MainWindow()
@@ -46,8 +40,12 @@ void MainWindow::on_newButton_clicked()
 
 void MainWindow::on_loadButton_clicked()
 {
-    //todo: m_mapLoadDisplay->update();
-    ui->scrollArea->setWidget(&m_mapLoadDisplay);
+    m_mapLoadDisplay = std::make_unique<MapLoadDisplay>();
+    m_mapLoadDisplay->setBackgroundRole(QPalette::Dark);
+    m_mapLoadDisplay->resize(200, 200);
+
+    QObject::connect(m_mapLoadDisplay.get(), &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
+    ui->scrollArea->setWidget(m_mapLoadDisplay.get());
     ui->scrollArea->show();
 }
 
@@ -68,7 +66,6 @@ void MainWindow::showMap(QString mapPath)
         return;
     }
 
-    //MapListViewer *mapListViewer = new MapListViewer(mapPath, ui->scrollArea);
     m_mapViewer.release();
     m_mapViewer = std::make_unique<MapListViewer>(mapPath, ui->scrollArea);
     m_mapViewer->setBackgroundRole(QPalette::Dark);

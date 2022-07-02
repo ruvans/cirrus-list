@@ -14,8 +14,6 @@ MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
 
     for (MapData& map : maps)
     {
-        //MapListWidgetItem* widgetItem= new MapListWidgetItem(map);
-        //QListWidgetItem* item = new QListWidgetItem;
         m_mapListWidgetItems.push_back(new MapListWidgetItem(map));
         m_listItems.push_back(new QListWidgetItem);
         m_listItems.back()->setSizeHint(QSize(m_listItems.back()->sizeHint().width(), 50));

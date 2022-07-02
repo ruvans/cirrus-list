@@ -27,8 +27,6 @@ public:
         m_itemLayout->addWidget(m_subjectLabel.get());
         m_itemLayout->addWidget(m_dateLabel.get());
         m_itemLayout->setContentsMargins(20,0,20,0);
-        this->setLayout(m_itemLayout.get());
-        this->show();
     }
     MapData m_itemMapData;
     std::unique_ptr<QLabel> m_subjectLabel, m_dateLabel;
