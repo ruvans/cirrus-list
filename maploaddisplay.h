@@ -18,7 +18,7 @@ public:
         m_itemMapData = mapData;
 
         m_subjectLabel = std::make_unique<QLabel>(mapData.mapSubject);
-        m_dateLabel = std::make_unique<QLabel>(mapData.lastUpdated);
+        m_dateLabel = std::make_unique<QLabel>(mapData.lastUpdated.toString("mm:hh   dd-MMMM-yyyy"));
         m_itemLayout = std::make_unique<QHBoxLayout>(this);
         //set widget heights
         m_subjectLabel->setMaximumHeight(itemsHeight);

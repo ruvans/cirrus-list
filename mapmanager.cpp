@@ -56,6 +56,12 @@ QString Mapmanager::getMapSubject(QString mapPath)
     return returnStr;
 }
 
+QDateTime Mapmanager::getLastUpdatedDate(QString mapPath)
+{
+    QFile file(mapPath);
+    return file.fileTime(QFileDevice::FileModificationTime);
+}
+
 bool Mapmanager::establishMapsDir()
 {
 
@@ -102,6 +108,7 @@ std::vector<MapData> Mapmanager::getAvailableMaps()
         newData.mapPath = getMapsDirPath().append(QDir::separator()).append(map);
         newData.mapFilename = map;
         newData.mapSubject = getMapSubject(newData.mapPath);
+        newData.lastUpdated = getLastUpdatedDate(newData.mapPath);
         mapsData.push_back(newData);
     }
 

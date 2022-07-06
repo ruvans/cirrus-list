@@ -13,7 +13,7 @@ struct MapData
     QString mapFilename;
     QString mapPath;
     QString mapSubject;
-    QString lastUpdated;//probably not a string
+    QDateTime lastUpdated;//probably not a string
     //QString cloudColour;//maybe
 };
 
@@ -36,6 +36,8 @@ public:
     QString makeNewMap(QString mapName);
 
     QString getMapSubject(QString mapPath);
+
+    QDateTime getLastUpdatedDate(QString mapPath);
 
     std::vector<MapData> getAvailableMaps();
 
