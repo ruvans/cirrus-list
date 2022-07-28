@@ -1,5 +1,5 @@
-#ifndef MAPLISTVIEWER_H
-#define MAPLISTVIEWER_H
+#ifndef MAPVIEWER_H
+#define MAPVIEWER_H
 
 #include <QWidget>
 #include <QLabel>
@@ -7,11 +7,11 @@
 
 #include "mapmanager.h"
 
-class MapListViewer : public QWidget
+class MapViewer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MapListViewer(QString const& mapPath, QWidget *parent = nullptr);
+    explicit MapViewer(QString const& mapPath, QWidget *parent = nullptr);
 
 signals:
 
@@ -21,4 +21,4 @@ private:
 
 };
 
-#endif // MAPLISTVIEWER_H
+#endif // MAPVIEWER_H

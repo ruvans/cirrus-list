@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QMessageLogger>
 #include "mapmanager.h"
-#include "maplistviewer.h"
+#include "mapviewer.h"
 #include "maploaddisplay.h"
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +31,7 @@ private:
     void showMap(QString mapFile);
     std::unique_ptr<MapLoadDisplay> m_mapLoadDisplay;
     //MapLoadDisplay m_mapLoadDisplay;
-    std::unique_ptr<MapListViewer> m_mapViewer;
+    std::unique_ptr<MapViewer> m_mapViewer;
 
 
 };

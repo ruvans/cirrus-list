@@ -67,7 +67,7 @@ void MainWindow::showMap(QString mapPath)
     }
 
     m_mapViewer.release();
-    m_mapViewer = std::make_unique<MapListViewer>(mapPath, ui->scrollArea);
+    m_mapViewer = std::make_unique<MapViewer>(mapPath, ui->scrollArea);
     m_mapViewer->setBackgroundRole(QPalette::Dark);
     m_mapViewer->resize(200, 200);
     ui->scrollArea->takeWidget();
