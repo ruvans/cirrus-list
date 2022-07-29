@@ -26,6 +26,12 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+resources.files = \
+    resources/cloudbackground.jpg
+resources.prefix = /
+
+RESOURCES = resources
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

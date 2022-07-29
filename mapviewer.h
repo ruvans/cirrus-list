@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QHBoxLayout>
+
 
 #include "mapmanager.h"
+#include "node.h"
 
 class MapViewer : public QWidget
 {
@@ -16,8 +17,8 @@ public:
 signals:
 
 private:
-    std::unique_ptr<QHBoxLayout> m_layout;
     std::unique_ptr<QLabel> m_mainLabel;
+    std::unique_ptr<node> m_centreNode;
 
 };
 
