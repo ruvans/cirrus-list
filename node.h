@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QMessageLogger>
+#include <QPainter>
 
 struct NodeProperties
 {
@@ -25,23 +26,19 @@ class Node : public QWidget
 public:
     explicit Node(QWidget *parent = nullptr);
     void setText(QString newText);
-/*
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    */
+
 signals:
 
 private:
+    //void paintBackground();
+
     std::unique_ptr<QPixmap> m_backgroundImg;
     std::unique_ptr<QLabel> m_backgroundImgLabel;
     std::unique_ptr<QLabel> m_mainText;
     NodeProperties m_nodeProperties;
-    QPoint m_lastMousePoint;
+    QString m_nodeText;
 };
 
 #endif // NODE_H

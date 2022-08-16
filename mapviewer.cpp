@@ -14,21 +14,29 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) : QWidget(parent)
 void MapViewer::mousePressEvent(QMouseEvent *event)
 {
     qInfo("mousePressEvent");
-    QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
-    if (child == nullptr)
+    m_grabbedNode = static_cast<Node*>(childAt(event->pos()));
+    if (m_grabbedNode == nullptr)
     {
         return;
     }
 
     if (event->button() == Qt::LeftButton)
     {
+        qInfo("event pos: %d.%d", event->pos().x(), event->pos().y());
+        qInfo("child pos: %d.%d", m_grabbedNode->pos().x(), m_grabbedNode->pos().y());
+        QPoint hotSpot = event->pos() - m_grabbedNode->pos();
+        m_grabbedHotSpot = hotSpot;
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
         mimeData->setText("application/x-cirrusmap");
-        QPixmap tempImg(":resources/cloudbackground.jpg");
+        //QPixmap tempImg(":resources/cloudbackground.jpg");
+        QPixmap tempImg = m_grabbedNode->grab();
         drag->setMimeData(mimeData);
         drag->setPixmap(tempImg);
+        drag->setHotSpot(hotSpot);
         drag->exec();
+
+
     }
 
 }
@@ -52,8 +60,14 @@ void MapViewer::dragMoveEvent(QDragMoveEvent *event)
 void MapViewer::dropEvent(QDropEvent *event)
 {
     qInfo("dropEvent");
+    if (m_grabbedNode == nullptr)
+    {
+        return;
+    }
+
+
     QPointF newLocation = event->position();
-    m_centreNode->move(newLocation.x() , newLocation.y());
+    m_grabbedNode->move(newLocation.x() - m_grabbedHotSpot.x() , newLocation.y() - m_grabbedHotSpot.y());
 
 }
 

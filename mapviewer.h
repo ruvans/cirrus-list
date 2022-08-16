@@ -37,6 +37,8 @@ private:
     std::unique_ptr<QLabel> m_mainLabel;
     std::unique_ptr<Node> m_centreNode;
     QPoint m_lastMousePoint;
+    Node *m_grabbedNode;
+    QPoint m_grabbedHotSpot;
 
 };
 
