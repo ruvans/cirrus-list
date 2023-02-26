@@ -1,13 +1,28 @@
 #include "mapviewer.h"
 
-MapViewer::MapViewer(QString const& mapPath, QWidget *parent) : QWidget(parent)
+MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
+    QWidget(parent),
+    m_currentMapPath(mapPath)
 {
-    Mapmanager mapman;
+    MapDataManager mapData;
 
     m_centreNode = std::make_unique<Node>(this);
-    m_centreNode->setText(mapman.getMapSubject(mapPath));
+    m_centreNode->setText(mapData.getMapSubject(mapPath));
     m_centreNode->setFixedSize(200,40);
+
     setAcceptDrops(true);
+}
+
+void MapViewer::saveActiveMap()
+{
+
+    NodeDataManager nodeDataManager;
+    QString mainNodeXml = nodeDataManager.createNodeXml(m_centreNode->getNodeProperties());
+
+    //tell mapDataManager to create the xml
+    //give the xml to the mapManager
+    //display some kind of feedback to the user
+
 }
 
 
@@ -22,20 +37,16 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton)
     {
-        qInfo("event pos: %d.%d", event->pos().x(), event->pos().y());
-        qInfo("child pos: %d.%d", m_grabbedNode->pos().x(), m_grabbedNode->pos().y());
         QPoint hotSpot = event->pos() - m_grabbedNode->pos();
         m_grabbedHotSpot = hotSpot;
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
         mimeData->setText("application/x-cirrusmap");
-        //QPixmap tempImg(":resources/cloudbackground.jpg");
         QPixmap tempImg = m_grabbedNode->grab();
         drag->setMimeData(mimeData);
         drag->setPixmap(tempImg);
         drag->setHotSpot(hotSpot);
         drag->exec();
-
 
     }
 
@@ -66,9 +77,8 @@ void MapViewer::dropEvent(QDropEvent *event)
     }
 
 
-    QPointF newLocation = event->position();
-    m_grabbedNode->move(newLocation.x() - m_grabbedHotSpot.x() , newLocation.y() - m_grabbedHotSpot.y());
-
+    QPointF newLocation = event->position() - m_grabbedHotSpot;
+    m_grabbedNode->move(newLocation.x() , newLocation.y());
 }
 
 

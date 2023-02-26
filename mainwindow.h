@@ -24,7 +24,10 @@ public:
 private slots:
     void on_newButton_clicked();
     void on_loadButton_clicked();
+    void on_saveButton_clicked();
     void on_mapToLoadChosen(QString mapFile);
+
+
 
 private:
     Ui::MainWindow *ui;

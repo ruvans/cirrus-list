@@ -33,6 +33,9 @@ public:
     std::unique_ptr<QHBoxLayout> m_itemLayout;
 };
 
+/*
+ * MapLoadDisplay is in charge is showing all the maps available on the computer
+*/
 class MapLoadDisplay : public QWidget
 {
     Q_OBJECT

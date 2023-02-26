@@ -2,42 +2,22 @@
 
 Node::Node(QWidget *parent) : QWidget(parent)
 {
-    //note: maybe use QPaintEvent for background later on?
-    m_backgroundImg = std::make_unique<QPixmap>(":resources/cloudbackground.jpg");
-    QPixmap backgroundImg(":resources/cloudbackground.jpg");
-    backgroundImg = backgroundImg.scaledToWidth(this->width());
-/*
-    m_backgroundImgLabel = std::make_unique<QLabel>("", this);
-    m_backgroundImgLabel->setFixedSize(this->width(), this->height());
-    m_backgroundImgLabel->setPixmap(backgroundImg);
-    m_backgroundImgLabel->setMouseTracking(false);
-
-    m_mainText = std::make_unique<QLabel>("new text", m_backgroundImgLabel.get());
-    m_mainText->setFixedSize(this->width(), this->height());
-    m_mainText->setAlignment(Qt::AlignCenter);
-    m_mainText->setStyleSheet("QLabel {  color : black; }");
-    m_mainText->setMouseTracking(false);
-    */
 }
 
 void Node::setText(QString newText)
 {
-    //m_mainText->setText(newText);
-    m_nodeText = newText;
+    m_nodeProperties.nodeText = newText;
     repaint();
+}
+
+NodeProperties* Node::getNodeProperties()
+{
+    return &m_nodeProperties;
 }
 
 void Node::paintEvent(QPaintEvent */*event*/)
 {
-    QRect nodeRect = this->geometry();
-    QFontMetrics metric(font());
-    QSize size = metric.size(Qt::TextSingleLine, m_nodeText);
-
-    QImage image(size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied);
-    image.fill(qRgba(0, 0, 0, 50));
-
-    QFont font;
-    font.setStyleStrategy(QFont::ForceOutline);
+    const QRect nodeRect(0,0,this->width(), this->height());
 
     QPainter painter(this);
     //paint cloudy background
@@ -45,12 +25,20 @@ void Node::paintEvent(QPaintEvent */*event*/)
     painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
 
     //write node text
+    QFont font;
+    font.setStyleStrategy(QFont::ForceOutline);
     painter.setFont(font);
     painter.setPen(Qt::black);
-    painter.drawText(QRect(QPoint(6, 6), size), Qt::AlignCenter, m_nodeText);
+    painter.drawText(nodeRect, Qt::AlignCenter, m_nodeProperties.nodeText);
     painter.end();
+}
 
-
+void Node::moveEvent(QMoveEvent */*event*/)
+{
+    //note: this is also triggered on widget initialisation
+    qInfo("widget moved");
+    m_nodeProperties.x = this->x();
+    m_nodeProperties.y = this->y();
 }
 
 

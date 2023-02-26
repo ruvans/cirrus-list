@@ -11,17 +11,21 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    mapdatamanager.cpp \
     maploaddisplay.cpp \
     mapmanager.cpp \
     mapviewer.cpp \
-    node.cpp
+    node.cpp \
+    nodedatamanager.cpp
 
 HEADERS += \
     mainwindow.h \
+    mapdatamanager.h \
     maploaddisplay.h \
     mapmanager.h \
     mapviewer.h \
-    node.h
+    node.h \
+    nodedatamanager.h
 
 FORMS += \
     mainwindow.ui

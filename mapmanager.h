@@ -1,46 +1,24 @@
 #ifndef MAPMANAGER_H
 #define MAPMANAGER_H
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 #include <QDir>
 #include <QString>
 #include <QMessageLogger>
 #include <QDateTime>
 #include <QFile>
+#include "mapdatamanager.h"
 
-struct MapData
-{
-    QString mapFilename;
-    QString mapPath;
-    QString mapSubject;
-    QDateTime lastUpdated;//probably not a string
-    //QString cloudColour;//maybe
-};
 
-namespace mapElements
-{
-    inline const static QString MAP_ELEMENT="map";
-    inline const static QString MAP_DESCRIPTION="mapDesc";
-
-};
-namespace mapAttributes
-{
-    inline const static QString MAP_SUBJECT="mapSubject";
-};
-
+/* This class is getting maps, sorting maps, etc*/
 class Mapmanager
 {
 public:
     Mapmanager();
 
-    QString makeNewMap(QString mapName);
-
-    QString getMapSubject(QString mapPath);
+    QString makeNewMap(QString mapName);//this will use mapdatamamager to make the file
 
     QDateTime getLastUpdatedDate(QString mapPath);
 
     std::vector<MapData> getAvailableMaps();
-
 
 
 private:

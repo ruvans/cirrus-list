@@ -31,30 +31,6 @@ QString Mapmanager::makeNewMap(QString mapName)
     return mapSavePath;
 }
 
-QString Mapmanager::getMapSubject(QString mapPath)
-{
-    QString returnStr="";
-    QFile file(mapPath);
-    file.open(QIODevice::ReadOnly);
-
-    QXmlStreamReader xmlReader(&file);
-
-    while (!xmlReader.atEnd()) {
-        if(xmlReader.name() == mapAttributes::MAP_SUBJECT)
-        {
-            returnStr = xmlReader.readElementText();
-            break;
-        }
-        xmlReader.readNext();
-
-     }
-     if (xmlReader.hasError()) {
-        //don't panic DONT PANIC
-     }
-
-    file.close();
-    return returnStr;
-}
 
 QDateTime Mapmanager::getLastUpdatedDate(QString mapPath)
 {
@@ -99,6 +75,7 @@ QString Mapmanager::getMapsDirPath()
 std::vector<MapData> Mapmanager::getAvailableMaps()
 {
     std::vector<MapData> mapsData;
+    MapDataManager mapDataManager;
     QDir mapsDir (getMapsDirPath());
     QStringList mapsList = mapsDir.entryList(QDir::Files,QDir::Time); //find all files, in order of modified time
     for (QString& map : mapsList)
@@ -107,10 +84,19 @@ std::vector<MapData> Mapmanager::getAvailableMaps()
         MapData newData;
         newData.mapPath = getMapsDirPath().append(QDir::separator()).append(map);
         newData.mapFilename = map;
-        newData.mapSubject = getMapSubject(newData.mapPath);
+        newData.mapSubject = mapDataManager.getMapSubject(newData.mapPath);
         newData.lastUpdated = getLastUpdatedDate(newData.mapPath);
         mapsData.push_back(newData);
     }
 
     return mapsData;
+}
+
+
+//todo: finish this and get mapviewer to call him
+bool updateExistingMap(QString mapPath)
+{
+    bool success=false;
+
+    return success;
 }

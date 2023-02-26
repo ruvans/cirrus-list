@@ -49,6 +49,14 @@ void MainWindow::on_loadButton_clicked()
     ui->scrollArea->show();
 }
 
+void MainWindow::on_saveButton_clicked()
+{
+    if (m_mapViewer != nullptr)
+    {
+        m_mapViewer->saveActiveMap();
+    }
+}
+
 void MainWindow::on_mapToLoadChosen(QString mapFile)
 {
     if (mapFile.isEmpty() == false)
@@ -75,3 +83,6 @@ void MainWindow::showMap(QString mapPath)
     ui->scrollArea->show();
 
 }
+
+
+

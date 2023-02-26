@@ -2,43 +2,30 @@
 #define NODE_H
 
 #include <QWidget>
-#include <QLabel>
 #include <QPixmap>
-#include <QDir>
-#include <QMouseEvent>
-#include <QDrag>
-#include <QByteArray>
-#include <QDataStream>
 #include <QMessageLogger>
 #include <QPainter>
+#include "nodedatamanager.h"
 
-struct NodeProperties
-{
-    int x;
-    int y;
-    int width;
-    int height;
-};
-
+/* Class: Node
+ * In Cirrus Map a Node is a single text cloud.
+ * note: in the future there will be different types of nodes
+*/
 class Node : public QWidget
 {
     Q_OBJECT
 public:
     explicit Node(QWidget *parent = nullptr);
-    void setText(QString newText);
     void paintEvent(QPaintEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
+    void setText(QString newText);
+    NodeProperties* getNodeProperties();
 
 
 signals:
 
 private:
-    //void paintBackground();
-
-    std::unique_ptr<QPixmap> m_backgroundImg;
-    std::unique_ptr<QLabel> m_backgroundImgLabel;
-    std::unique_ptr<QLabel> m_mainText;
     NodeProperties m_nodeProperties;
-    QString m_nodeText;
 };
 
 #endif // NODE_H
