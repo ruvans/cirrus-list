@@ -35,6 +35,8 @@ class MapDataManager
 public:
     MapDataManager();
 
+    QString getNewMapData(QString mapSubject);
+
     QString getMapSubject(QString mapPath);//could be a static func
 private:
 

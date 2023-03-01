@@ -7,6 +7,7 @@ Mapmanager::Mapmanager()
 
 QString Mapmanager::makeNewMap(QString mapName)
 {
+    MapDataManager mapDataManager;
     if (establishMapsDir() == false)
     {
         return "";
@@ -14,18 +15,11 @@ QString Mapmanager::makeNewMap(QString mapName)
 
     QString mapSaveName = generateMapName();
     QString mapSavePath = getMapsDirPath().append(QDir::separator()).append(mapSaveName);
+    QString emptyMapData = mapDataManager.getNewMapData(mapName);
 
     QFile file(mapSavePath);
     file.open(QIODevice::WriteOnly);
-
-    QXmlStreamWriter *xmlWriter = new QXmlStreamWriter(&file);
-    xmlWriter->writeStartDocument();
-    xmlWriter->setAutoFormatting(true);
-    xmlWriter->writeStartElement(mapElements::MAP_ELEMENT);
-    xmlWriter->writeStartElement(mapElements::MAP_DESCRIPTION);
-    xmlWriter->writeTextElement(mapAttributes::MAP_SUBJECT, mapName);
-    xmlWriter->writeEndElement();
-    xmlWriter->writeEndDocument();
+    file.write(emptyMapData.toUtf8());
     file.close();
 
     return mapSavePath;
