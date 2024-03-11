@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QFile>
 #include "mapdatamanager.h"
+#include "nodedatamanager.h"
 
 
 /* This class is getting maps, sorting maps, etc*/
@@ -19,6 +20,8 @@ public:
     QDateTime getLastUpdatedDate(QString mapPath);
 
     std::vector<MapData> getAvailableMaps();
+
+    bool saveMap(MapDataManager& mdm);
 
 
 private:

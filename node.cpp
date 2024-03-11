@@ -10,12 +10,17 @@ void Node::setText(QString newText)
     repaint();
 }
 
+void Node::setNodeProperties(NodeProperties properties)
+{
+    m_nodeProperties = properties;
+}
+
 NodeProperties* Node::getNodeProperties()
 {
     return &m_nodeProperties;
 }
 
-void Node::paintEvent(QPaintEvent */*event*/)
+void Node::paintEvent(QPaintEvent* /*event*/)
 {
     const QRect nodeRect(0,0,this->width(), this->height());
 

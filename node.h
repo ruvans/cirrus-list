@@ -19,6 +19,7 @@ public:
     void paintEvent(QPaintEvent *event) override;
     void moveEvent(QMoveEvent *event) override;
     void setText(QString newText);
+    void setNodeProperties(NodeProperties);
     NodeProperties* getNodeProperties();
 
 
@@ -26,6 +27,7 @@ signals:
 
 private:
     NodeProperties m_nodeProperties;
+
 };
 
 #endif // NODE_H

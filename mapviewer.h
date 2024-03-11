@@ -1,6 +1,6 @@
 #ifndef MAPVIEWER_H
 #define MAPVIEWER_H
-
+#include <vector>
 #include <QWidget>
 #include <QLabel>
 #include <QMouseEvent>
@@ -42,11 +42,11 @@ signals:
 
 private:
     std::unique_ptr<QLabel> m_mainLabel;
-    std::unique_ptr<Node> m_centreNode;
+    std::vector<Node*>m_nodes;
     QPoint m_lastMousePoint;
     Node *m_grabbedNode;
     QPoint m_grabbedHotSpot;
-    QString m_currentMapPath;
+    MapDataManager m_currentMap;
 };
 
 #endif // MAPVIEWER_H

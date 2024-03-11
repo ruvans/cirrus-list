@@ -7,7 +7,6 @@ Mapmanager::Mapmanager()
 
 QString Mapmanager::makeNewMap(QString mapName)
 {
-    MapDataManager mapDataManager;
     if (establishMapsDir() == false)
     {
         return "";
@@ -15,7 +14,8 @@ QString Mapmanager::makeNewMap(QString mapName)
 
     QString mapSaveName = generateMapName();
     QString mapSavePath = getMapsDirPath().append(QDir::separator()).append(mapSaveName);
-    QString emptyMapData = mapDataManager.getNewMapData(mapName);
+    QString emptyMapData = MapDataManager::getNewMapData(mapName);
+
 
     QFile file(mapSavePath);
     file.open(QIODevice::WriteOnly);
@@ -69,7 +69,6 @@ QString Mapmanager::getMapsDirPath()
 std::vector<MapData> Mapmanager::getAvailableMaps()
 {
     std::vector<MapData> mapsData;
-    MapDataManager mapDataManager;
     QDir mapsDir (getMapsDirPath());
     QStringList mapsList = mapsDir.entryList(QDir::Files,QDir::Time); //find all files, in order of modified time
     for (QString& map : mapsList)
@@ -77,13 +76,26 @@ std::vector<MapData> Mapmanager::getAvailableMaps()
         qInfo("adding map data for map: %s", qUtf8Printable(map));
         MapData newData;
         newData.mapPath = getMapsDirPath().append(QDir::separator()).append(map);
+        MapDataManager mapDataManager(newData.mapPath);
         newData.mapFilename = map;
-        newData.mapSubject = mapDataManager.getMapSubject(newData.mapPath);
+        newData.mapSubject = "todo";//mapDataManager.getMapSubject();
         newData.lastUpdated = getLastUpdatedDate(newData.mapPath);
         mapsData.push_back(newData);
     }
 
     return mapsData;
+}
+
+bool Mapmanager::saveMap(MapDataManager& mapDataManager)
+{
+    qInfo("Saving mapdata to file");
+    QFile file(mapDataManager.m_currentMapPath);
+    file.open(QIODevice::WriteOnly);
+    file.write(mapDataManager.m_currentMapData.toUtf8());
+    file.close();
+
+    return true;
+    //todo return false if file saving fails
 }
 
 
@@ -94,3 +106,5 @@ bool updateExistingMap(QString mapPath)
 
     return success;
 }
+
+
