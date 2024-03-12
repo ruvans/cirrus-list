@@ -13,6 +13,7 @@ void Node::setText(QString newText)
 void Node::setNodeProperties(NodeProperties properties)
 {
     m_nodeProperties = properties;
+    move(properties.x, properties.y);
 }
 
 NodeProperties* Node::getNodeProperties()

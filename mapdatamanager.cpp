@@ -102,8 +102,6 @@ void MapDataManager::updateNodeData(NodeProperties* nodeProperties)
             node = node.nextSibling().toElement();
             continue;
         }
-         std::cout << "node id was", nodeProperties->nodeID;
-         qInfo("found the node to update");
          node.setAttribute(nodeAttributes::NODE_POSITION_X, nodeProperties->x);
          node.setAttribute(nodeAttributes::NODE_POSITION_Y, nodeProperties->y);
          node.setAttribute(nodeAttributes::NODE_TEXT, nodeProperties->nodeText);
