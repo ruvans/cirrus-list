@@ -42,6 +42,8 @@ public:
 
     static QString getNewMapData(QString mapSubject);
 
+    QString getCurrentMapDescription();
+
     std::vector<NodeProperties>getNodesData();
 
 

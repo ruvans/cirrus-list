@@ -78,7 +78,7 @@ std::vector<MapData> Mapmanager::getAvailableMaps()
         newData.mapPath = getMapsDirPath().append(QDir::separator()).append(map);
         MapDataManager mapDataManager(newData.mapPath);
         newData.mapFilename = map;
-        newData.mapSubject = "todo";//mapDataManager.getMapSubject();
+        newData.mapSubject = mapDataManager.getCurrentMapDescription();
         newData.lastUpdated = getLastUpdatedDate(newData.mapPath);
         mapsData.push_back(newData);
     }

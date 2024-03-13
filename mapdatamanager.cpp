@@ -37,7 +37,22 @@ QString MapDataManager::getNewMapData(QString mapSubject)
     return doc.toString();
 }
 
-//todo
+QString MapDataManager::getCurrentMapDescription()
+{
+    QString mapDescription("Unknown");
+
+    QDomDocument doc;
+    doc.setContent(m_currentMapData);
+    QDomElement mapRoot = doc.documentElement();
+    QDomElement mapDesc = mapRoot.firstChildElement(mapElements::MAP_DESCRIPTION);
+    if (mapDesc.hasAttribute(mapAttributes::MAP_SUBJECT))
+    {
+        mapDescription = mapDesc.attribute(mapAttributes::MAP_SUBJECT);
+    }
+
+    return mapDescription;
+}
+
 std::vector<NodeProperties> MapDataManager::getNodesData()
 {
     qInfo("getNodesData called");
@@ -75,10 +90,6 @@ std::vector<NodeProperties> MapDataManager::getNodesData()
         }
         node = node.nextSibling().toElement();
     }
-
-
-
-
     return nodes;
 }
 
@@ -110,28 +121,6 @@ void MapDataManager::updateNodeData(NodeProperties* nodeProperties)
          break;
     }
   m_currentMapData = doc.toString();
-}
-
-//todo remove after above function fixed and working okay
-void MapDataManager::updateAllNodeData(std::vector<NodeProperties *> nodeProperties)
-{
-//    qInfo("Updating all the node data for saving, which is: ");
-//    NodeDataManager nodeMan;
-//    QDomDocument doc(m_currentMapData);
-//    QDomElement root = doc.documentElement();
-//
-//    QDomElement tagMap = doc.createElement(mapElements::MAP_NODES);
-//    auto nodes = nodeProperties.size();
-//    qInfo("Adding data for this many nodes:" );
-//    qInfo(QString::number(nodes).toUtf8());
-//
-//    for (NodeProperties* nodeProperty : nodeProperties)
-//    {
-//        nodeMan.addNodeXml(nodeProperty, doc);
-//    }
-//
-//    m_currentMapData = doc.toString();
-//    qInfo(m_currentMapData.toUtf8());
 }
 
 
