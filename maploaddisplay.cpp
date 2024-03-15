@@ -3,8 +3,15 @@
 #include <QtGui>
 MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
 {
-    m_layout = std::make_unique<QHBoxLayout>(this);// this keyword is important, we tell the widget the parent withn be showed
+    m_descriptionLabel = std::make_unique<QLabel>("Description");
+    m_dateLabel = std::make_unique<QLabel>("Date");
 
+    m_labelLayout = std::make_unique<QHBoxLayout>();//no 'this', so m_layout will take ownership
+    m_labelLayout->addWidget(m_descriptionLabel.get());
+    m_labelLayout->addWidget(m_dateLabel.get());
+
+    m_layout = std::make_unique<QVBoxLayout>(this);// 'this' keyword is important, we tell the widget the parent to be showed in
+    m_layout->addLayout(m_labelLayout.get());
     Mapmanager mapman;
     std::vector<MapData> maps = mapman.getAvailableMaps();
 
@@ -38,6 +45,7 @@ MapLoadDisplay::~MapLoadDisplay()
     }
     m_listItems.clear();
     m_mapListWidgetItems.clear();
+    m_labelLayout.release();
     m_layout.release();
     m_listWidget.release();
 }

@@ -52,10 +52,12 @@ signals:
 void mapItemClicked(QString mapToLoad);
 
 private:
-std::unique_ptr<QHBoxLayout> m_layout;
+std::unique_ptr<QVBoxLayout> m_layout;
 std::unique_ptr<QListWidget> m_listWidget;
 std::vector<QListWidgetItem*> m_listItems;
 std::vector<MapListWidgetItem*> m_mapListWidgetItems;
+std::unique_ptr<QHBoxLayout> m_labelLayout;
+std::unique_ptr<QLabel> m_descriptionLabel, m_dateLabel;
 };
 
 #endif // MAPLOADDISPLAY_H
