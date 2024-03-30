@@ -3,6 +3,7 @@
 #include <QtGui>
 MapLoadDisplay::MapLoadDisplay(QWidget *parent) : QWidget(parent)
 {
+    this->setObjectName("mapArea");
     m_descriptionLabel = std::make_unique<QLabel>("Description");
     m_dateLabel = std::make_unique<QLabel>("Date");
 

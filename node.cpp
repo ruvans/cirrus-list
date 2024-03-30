@@ -27,7 +27,7 @@ void Node::paintEvent(QPaintEvent* /*event*/)
 
     QPainter painter(this);
     //paint cloudy background
-    QPixmap backgroundImg(":resources/cloudbackground.jpg");
+    QPixmap backgroundImg(":resources/cloudbackground.png");
     painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
 
     //write node text

@@ -7,6 +7,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //https://doc.qt.io/qt-6/stylesheet-examples.html
+    setStyleSheet(
+                "#centralwidget { background-color: #a2d2ff; }"
+                "QPushButton { background-color: #cdb4db; }"
+                "QStatusBar { background-color: #7BB1E4; }"
+                "QWidget#scrollAreaWidgetContents { background-color: transparent; }"//otherwise hard to colour main widgets
+                "QScrollArea { background-color: #BDDFFE; }"
+                "QWidget#mapArea { background-color: red; }"//this makes the scrollarea colour show properly(????)
+                                                            //nothing is showing up red, but if this isn't here then the blue I want goes away???
+                );
+
 }
 
 MainWindow::~MainWindow()
@@ -41,7 +53,6 @@ void MainWindow::on_newButton_clicked()
 void MainWindow::on_loadButton_clicked()
 {
     m_mapLoadDisplay = std::make_unique<MapLoadDisplay>();
-    m_mapLoadDisplay->setBackgroundRole(QPalette::Dark);
     m_mapLoadDisplay->resize(200, 200);
 
     QObject::connect(m_mapLoadDisplay.get(), &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
@@ -76,11 +87,14 @@ void MainWindow::showMap(QString mapPath)
 
     m_mapViewer.release();
     m_mapViewer = std::make_unique<MapViewer>(mapPath, ui->scrollArea);
-    m_mapViewer->setBackgroundRole(QPalette::Dark);
+    //ui->scrollArea->setStyleSheet( "QWidget { background-color: red; }"  );
+   // m_mapViewer->setBackgroundRole(QPalette::Dark);
     m_mapViewer->resize(200, 200);
     ui->scrollArea->takeWidget();
     ui->scrollArea->setWidget(m_mapViewer.get());
     ui->scrollArea->show();
+
+
 
 }
 

@@ -5,6 +5,7 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
     QWidget(parent),
     m_currentMap(mapPath)
 {
+    this->setObjectName("mapArea");
     std::vector<NodeProperties> nodeProps = m_currentMap.getNodesData();
 
     std::cout << nodeProps.size() << " nodes" << std::endl;

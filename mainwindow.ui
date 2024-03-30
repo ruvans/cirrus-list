@@ -17,14 +17,20 @@
    <widget class="QLabel" name="labelTitle">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>0</y>
-      <width>141</width>
-      <height>61</height>
+      <x>500</x>
+      <y>20</y>
+      <width>271</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Cirrus List</string>
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../build-cirrus-list-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/debug/qmake_resources.qrc">:/resources/cooltexttitle.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="newButton">
@@ -32,8 +38,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>101</width>
-      <height>81</height>
+      <width>61</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -44,10 +50,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>80</y>
       <width>781</width>
-      <height>451</height>
+      <height>461</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
     <property name="widgetResizable">
      <bool>true</bool>
@@ -58,7 +67,7 @@
        <x>0</x>
        <y>0</y>
        <width>779</width>
-       <height>449</height>
+       <height>459</height>
       </rect>
      </property>
     </widget>
@@ -66,10 +75,10 @@
    <widget class="QPushButton" name="loadButton">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>60</x>
       <y>0</y>
-      <width>111</width>
-      <height>81</height>
+      <width>61</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -79,10 +88,10 @@
    <widget class="QPushButton" name="saveButton">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>120</x>
       <y>0</y>
-      <width>111</width>
-      <height>81</height>
+      <width>61</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -102,6 +111,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../build-cirrus-list-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/debug/qmake_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
