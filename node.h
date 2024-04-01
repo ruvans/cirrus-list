@@ -22,11 +22,12 @@ public:
     void setNodeProperties(NodeProperties);
     NodeProperties* getNodeProperties();
 
-
+    void setSelected(bool newState);
 signals:
 
 private:
     NodeProperties m_nodeProperties;
+    bool isSelected{false};
 
 };
 

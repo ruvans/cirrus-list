@@ -73,6 +73,7 @@ void MainWindow::on_mapToLoadChosen(QString mapFile)
     if (mapFile.isEmpty() == false)
     {
         showMap(mapFile);
+        ui->nodeTools->setEnabled(true);
     }
 }
 

@@ -34,6 +34,7 @@ FORMS += \
 resources.files = \
     resources/cloudbackground.jpg \
     resources/cloudbackground.png \
+    resources/activecloudbackground.png \
     resources/cooltexttitle.png
 
 resources.prefix = /

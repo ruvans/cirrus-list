@@ -4,6 +4,15 @@ Node::Node(QWidget *parent) : QWidget(parent)
 {
 }
 
+void Node::setSelected(bool newState)
+{
+    if (newState != isSelected)
+    {
+        isSelected = newState;
+        repaint();
+    }
+}
+
 void Node::setText(QString newText)
 {
     m_nodeProperties.nodeText = newText;
@@ -27,8 +36,17 @@ void Node::paintEvent(QPaintEvent* /*event*/)
 
     QPainter painter(this);
     //paint cloudy background
-    QPixmap backgroundImg(":resources/cloudbackground.png");
-    painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
+    if (isSelected)
+    {
+        QPixmap backgroundImg(":resources/activecloudbackground.png");
+        painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
+    }
+    else
+    {
+        QPixmap backgroundImg(":resources/cloudbackground.png");
+        painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
+
+    }
 
     //write node text
     QFont font;

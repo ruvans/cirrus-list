@@ -39,13 +39,12 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
 {
     qInfo("mousePressEvent");
     m_grabbedNode = static_cast<Node*>(childAt(event->pos()));
-    if (m_grabbedNode == nullptr)
-    {
-        return;
-    }
+    bool nodeWasGrabbed = m_grabbedNode != nullptr;
 
-    if (event->button() == Qt::LeftButton)
+    if (nodeWasGrabbed && event->button() == Qt::LeftButton)
     {
+        m_grabbedNode->setSelected(true);
+
         QPoint hotSpot = event->pos() - m_grabbedNode->pos();
         m_grabbedHotSpot = hotSpot;
         QDrag *drag = new QDrag(this);
@@ -56,24 +55,29 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
         drag->setPixmap(tempImg);
         drag->setHotSpot(hotSpot);
         drag->exec();
+    }
 
+    if (!nodeWasGrabbed)
+    {
+        for (Node* node : m_nodes)
+        {
+            node->setSelected(false);
+        }
     }
 
 }
 
-void MapViewer::mouseReleaseEvent(QMouseEvent *event)
+void MapViewer::mouseReleaseEvent(QMouseEvent */*event*/)
 {
-    qInfo("mouse released");
+    //see dropEvent
 }
 
-void MapViewer::mouseMoveEvent(QMouseEvent *event)
+void MapViewer::mouseMoveEvent(QMouseEvent */*event*/)
 {
-    qInfo("mouseMoveEvent");
 }
 
 void MapViewer::dragMoveEvent(QDragMoveEvent *event)
 {
-    //qInfo("dragMoveEvent");
     event->acceptProposedAction();
 }
 
@@ -94,7 +98,6 @@ void MapViewer::dropEvent(QDropEvent *event)
 
 void MapViewer::dragEnterEvent(QDragEnterEvent *event)
 {
-    qInfo("dragEnterEvent");
     event->acceptProposedAction();
 }
 
