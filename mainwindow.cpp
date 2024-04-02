@@ -73,9 +73,14 @@ void MainWindow::on_mapToLoadChosen(QString mapFile)
     if (mapFile.isEmpty() == false)
     {
         showMap(mapFile);
-        ui->nodeTools->setEnabled(true);
     }
 }
+
+void MainWindow::on_nodeSelectionChanged(bool active)
+{
+    ui->nodeTools->setEnabled(active);
+}
+
 
 void MainWindow::showMap(QString mapPath)
 {
@@ -88,9 +93,9 @@ void MainWindow::showMap(QString mapPath)
 
     m_mapViewer.release();
     m_mapViewer = std::make_unique<MapViewer>(mapPath, ui->scrollArea);
-    //ui->scrollArea->setStyleSheet( "QWidget { background-color: red; }"  );
-   // m_mapViewer->setBackgroundRole(QPalette::Dark);
     m_mapViewer->resize(200, 200);
+    //QObject::connect(m_mapLoadDisplay.get(), &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
+    QObject::connect(m_mapViewer.get(), &MapViewer::nodeSelectionChanged, this, &MainWindow::on_nodeSelectionChanged);
     ui->scrollArea->takeWidget();
     ui->scrollArea->setWidget(m_mapViewer.get());
     ui->scrollArea->show();

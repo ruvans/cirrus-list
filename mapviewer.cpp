@@ -44,6 +44,7 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
     if (nodeWasGrabbed && event->button() == Qt::LeftButton)
     {
         m_grabbedNode->setSelected(true);
+        emit nodeSelectionChanged(/*active*/true);
 
         QPoint hotSpot = event->pos() - m_grabbedNode->pos();
         m_grabbedHotSpot = hotSpot;
@@ -63,6 +64,7 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
         {
             node->setSelected(false);
         }
+        emit nodeSelectionChanged(/*active*/false);
     }
 
 }

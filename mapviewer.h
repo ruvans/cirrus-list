@@ -37,6 +37,7 @@ public:
     void dropEvent(QDropEvent *event) override;
 
 signals:
+    void nodeSelectionChanged(bool active);
 
 private:
     std::unique_ptr<QLabel> m_mainLabel;

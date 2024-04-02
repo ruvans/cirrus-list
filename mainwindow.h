@@ -26,6 +26,7 @@ private slots:
     void on_loadButton_clicked();
     void on_saveButton_clicked();
     void on_mapToLoadChosen(QString mapFile);
+    void on_nodeSelectionChanged(bool active);
 
 
 
