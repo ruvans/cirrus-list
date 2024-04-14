@@ -26,9 +26,10 @@ private slots:
     void on_loadButton_clicked();
     void on_saveButton_clicked();
     void on_mapToLoadChosen(QString mapFile);
+    //node slots
     void on_nodeSelectionChanged(bool active);
-
-
+    void on_createChildNode_clicked();
+    void on_deleteNode_clicked();
 
 private:
     Ui::MainWindow *ui;

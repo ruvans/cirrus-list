@@ -9,8 +9,7 @@
 namespace nodeElements
 {
     inline const static QString NODE = "node";
-    inline const static QString CHILD = "children";
-    inline const static QString CHILD_NODE = "childnode";
+    inline const static QString CHILDREN = "children";
 };
 namespace nodeAttributes
 {
@@ -26,12 +25,12 @@ namespace nodeAttributes
 */
 struct NodeProperties
 {
-    int nodeID;
-    int x;
-    int y;
-    int width;
-    int height;
-    QString nodeText;
+    int nodeID{-1};
+    int x{0};
+    int y{0};
+    int width{400};
+    int height{100};
+    QString nodeText{""};
 };
 
 /*
@@ -41,9 +40,10 @@ class NodeDataManager
 {
 public:
     NodeDataManager();
-    static void addNodeXml(NodeProperties* nodeProperties, QDomDocument& parentDoc);
+    static void addNodeXml(NodeProperties& nodeProperties, QDomElement& newNodeElement);
 
     static QDomElement getInitialNodeData(QString nodeText);
+
 };
 
 #endif // NODEDATAMANAGER_H

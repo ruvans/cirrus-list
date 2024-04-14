@@ -51,8 +51,12 @@ public:
 
     void updateAllNodeData(std::vector<NodeProperties*> nodeProperties);
 
+    void addNewChildNode(int parentNodeID);
+
     QString m_currentMapData;
     QString m_currentMapPath;
+private:
+    void collectNodesData(std::vector<NodeProperties>& nodes, QDomElement& nodeElement);
 };
 
 #endif // MAPDATAMANAGER_H

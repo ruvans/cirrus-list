@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QMessageLogger>
 #include <QPainter>
+#include <QPlainTextEdit>
+#include <QHBoxLayout>
 #include "nodedatamanager.h"
 
 /* Class: Node
@@ -18,16 +20,23 @@ public:
     explicit Node(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *event) override;
     void moveEvent(QMoveEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void setText(QString newText);
     void setNodeProperties(NodeProperties);
     NodeProperties* getNodeProperties();
 
     void setSelected(bool newState);
+
+    void showTextInputBox();
+    void hideTextInputBox();
+    void setNewText(QString newText);
 signals:
 
 private:
     NodeProperties m_nodeProperties;
     bool isSelected{false};
+    std::unique_ptr<QPlainTextEdit> m_textInput;
+    std::unique_ptr<QHBoxLayout> m_layout;
 
 };
 

@@ -36,6 +36,9 @@ public:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
+    void addChildForSelectedNode();
+    void deleteSelectedNode();
+
 signals:
     void nodeSelectionChanged(bool active);
 

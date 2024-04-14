@@ -7,6 +7,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //connect buttons and slots
+    //node that some older buttons have been set via the form
+    connect(ui->addChildButton, SIGNAL(clicked()), this, SLOT(on_createChildNode_clicked()));
+    connect(ui->deleteNodeButton, SIGNAL(clicked()), this, SLOT(on_deleteNode_clicked()));
 
     //https://doc.qt.io/qt-6/stylesheet-examples.html
     setStyleSheet(
@@ -81,6 +85,23 @@ void MainWindow::on_nodeSelectionChanged(bool active)
     ui->nodeTools->setEnabled(active);
 }
 
+void MainWindow::on_createChildNode_clicked()
+{
+    qInfo("Creating child node");
+    if (m_mapViewer != nullptr)
+    {
+        m_mapViewer->addChildForSelectedNode();
+    }
+}
+
+void MainWindow::on_deleteNode_clicked()
+{
+    qInfo("Node murder");
+    if (m_mapViewer != nullptr)
+    {
+        m_mapViewer->deleteSelectedNode();
+    }
+}
 
 void MainWindow::showMap(QString mapPath)
 {
@@ -99,8 +120,6 @@ void MainWindow::showMap(QString mapPath)
     ui->scrollArea->takeWidget();
     ui->scrollArea->setWidget(m_mapViewer.get());
     ui->scrollArea->show();
-
-
 
 }
 

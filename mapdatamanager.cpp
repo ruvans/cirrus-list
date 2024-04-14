@@ -65,39 +65,38 @@ std::vector<NodeProperties> MapDataManager::getNodesData()
      xmlFile.close();
 
     QDomElement root = mapXml.documentElement();
-    QDomElement node = root.firstChild().toElement();
+    QDomElement node = root.firstChildElement(nodeElements::NODE);
 
-    std::vector<NodeProperties> nodes;
-    while (node.isNull() == false)
-    {
-        std::cout << "node isnt null" << std::endl;
-        qInfo("node not null");
-        if(node.tagName() == nodeElements::NODE)
-        {
-            std::cout << "node found" << std::endl;
-            while(!node.isNull())
-            {
-                NodeProperties nodeProperties;
-                nodeProperties.nodeID = node.attribute(nodeAttributes::NODE_ID).toInt();
-                nodeProperties.nodeText = node.attribute(nodeAttributes::NODE_TEXT);
-                nodeProperties.x = node.attribute(nodeAttributes::NODE_POSITION_X).toInt();
-                nodeProperties.y = node.attribute(nodeAttributes::NODE_POSITION_Y).toInt();
-                nodeProperties.height = node.attribute(nodeAttributes::NODE_HEIGHT).toInt();
-                nodeProperties.width = node.attribute(nodeAttributes::NODE_WIDTH).toInt();
-                nodes.push_back(nodeProperties);
-                node = node.nextSibling().toElement();
-            }
-        }
-        node = node.nextSibling().toElement();
-    }
-    return nodes;
+    std::vector<NodeProperties> nodeProperties;
+    collectNodesData(nodeProperties, node);
+    return nodeProperties;
 }
 
+void MapDataManager::collectNodesData(std::vector<NodeProperties>& nodeProperties, QDomElement& nodeElement)
+{
+    for (; nodeElement.isNull() == false; nodeElement = nodeElement.nextSiblingElement(nodeElements::NODE))
+    {
+         //todo nodeDataManager should do this stuff
+         NodeProperties newNodeData;
+         newNodeData.nodeID = nodeElement.attribute(nodeAttributes::NODE_ID).toInt();
+         newNodeData.nodeText = nodeElement.attribute(nodeAttributes::NODE_TEXT);
+         newNodeData.x = nodeElement.attribute(nodeAttributes::NODE_POSITION_X).toInt();
+         newNodeData.y = nodeElement.attribute(nodeAttributes::NODE_POSITION_Y).toInt();
+         newNodeData.height = nodeElement.attribute(nodeAttributes::NODE_HEIGHT).toInt();
+         newNodeData.width = nodeElement.attribute(nodeAttributes::NODE_WIDTH).toInt();
+         nodeProperties.push_back(newNodeData);
+         QDomElement firstChild = nodeElement.firstChildElement(nodeElements::CHILDREN);
+         const bool nodeHasChildren = firstChild.isNull() == false;
+         if (nodeHasChildren)
+         {
+             QDomElement firstChildNode = firstChild.firstChildElement(nodeElements::NODE);
+             collectNodesData(nodeProperties, firstChildNode);
+         }
+    }
+}
 
 void MapDataManager::updateNodeData(NodeProperties* nodeProperties)
 {
-    QString nodeid = QString::number(nodeProperties->nodeID);
-    qInfo("Updating node data for nodeID: " + nodeid.toUtf8());
     QDomDocument doc;
     doc.setContent(m_currentMapData);
     QDomElement root = doc.documentElement();
@@ -107,7 +106,7 @@ void MapDataManager::updateNodeData(NodeProperties* nodeProperties)
     while (node.isNull() == false)
     {
         const bool nodeFound = node.hasAttribute(nodeAttributes::NODE_ID) &&
-                node.attribute(nodeAttributes::NODE_ID) == QString::number(nodeProperties->nodeID);
+                               node.attribute(nodeAttributes::NODE_ID) == QString::number(nodeProperties->nodeID);
         if( nodeFound ==  false)
         {
             node = node.nextSibling().toElement();
@@ -123,4 +122,36 @@ void MapDataManager::updateNodeData(NodeProperties* nodeProperties)
   m_currentMapData = doc.toString();
 }
 
+void MapDataManager::addNewChildNode(int parentNodeID)
+{
+    NodeProperties newNodeProperties;
+    qInfo("Adding child node");
+    QDomDocument doc;
+    doc.setContent(m_currentMapData);
+    QDomElement root = doc.documentElement();
 
+    QDomElement node = root.firstChild().toElement();
+
+    while (node.isNull() == false)
+    {
+        const bool nodeFound = node.hasAttribute(nodeAttributes::NODE_ID) &&
+                node.attribute(nodeAttributes::NODE_ID) == QString::number(parentNodeID);
+        if( nodeFound ==  false)
+        {
+            node = node.nextSibling().toElement();
+            continue;
+        }
+        qInfo("parent node was found. Adding child node data now");
+        //add child node here
+        QDomElement childrenNode = node.firstChild().toElement();
+
+        QDomElement childNode = doc.createElement(nodeElements::NODE);
+        NodeDataManager::addNodeXml(newNodeProperties, childNode);
+
+        childrenNode.appendChild(childNode);
+        break;
+    }
+  m_currentMapData = doc.toString();
+  qInfo(qUtf8Printable(m_currentMapData));
+
+}

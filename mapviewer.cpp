@@ -19,6 +19,7 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
     }
 
     setAcceptDrops(true);
+
 }
 
 void MapViewer::saveActiveMap()
@@ -103,6 +104,23 @@ void MapViewer::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
+void MapViewer::addChildForSelectedNode()
+{
+    qInfo("mapViewer::addChildForSelectedNode");
+    m_nodes.push_back(new Node(this));
+   // m_nodes.back()->setNodeProperties(nodeData);
+    m_nodes.back()->setText("new node");
+    m_nodes.back()->setFixedSize(200,40);
+    m_nodes.back()->show();
+    m_currentMap.addNewChildNode(0);
+    //TODO get parent ID
 
+
+}
+
+void MapViewer::deleteSelectedNode()
+{
+
+}
 //https://stackoverflow.com/questions/18299077/dragging-a-qwidget-in-qt-5
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-fridgemagnets-example.html
