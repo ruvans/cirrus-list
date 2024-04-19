@@ -39,6 +39,8 @@ public:
     void addChildForSelectedNode();
     void deleteSelectedNode();
 
+    void updataDataForNode(Node* node);
+
 signals:
     void nodeSelectionChanged(bool active);
 

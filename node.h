@@ -31,6 +31,7 @@ public:
     void hideTextInputBox();
     void setNewText(QString newText);
 signals:
+    void nodePropertiesChanged(Node *node);
 
 private:
     NodeProperties m_nodeProperties;

@@ -26,6 +26,8 @@ void Node::setText(QString newText)
 {
     m_nodeProperties.nodeText = newText;
     repaint();
+
+    emit nodePropertiesChanged(this);
 }
 
 void Node::setNodeProperties(NodeProperties properties)
@@ -83,9 +85,10 @@ void Node::moveEvent(QMoveEvent */*event*/)
  {
      m_textInput.release();
      m_textInput = std::make_unique<QPlainTextEdit>();
-     m_textInput->grabKeyboard();
      m_textInput->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
      m_layout->addWidget(m_textInput.get());
+     m_textInput->grabKeyboard();
+     m_textInput->ensureCursorVisible();//is it visible? I'm not seeing it
  }
  void Node::hideTextInputBox()
  {

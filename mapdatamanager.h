@@ -31,6 +31,7 @@ namespace mapElements
 namespace mapAttributes
 {
     inline const static QString MAP_SUBJECT="mapSubject";
+    inline const static QString MAP_TOP_ID="topID";
 };
 
 
@@ -44,19 +45,32 @@ public:
 
     QString getCurrentMapDescription();
 
-    std::vector<NodeProperties>getNodesData();
+    /**
+     * @brief getCurrentMapTopID Get the next node ID
+     * I rather imagine this to be like one of those ticket dispensors
+     * in those old supermarket meat counter where you take a ticket
+     * and the number increases for the next person who takes a ticket.
+     * @return new node ID
+     */
+    int getCurrentMapTopID();
 
+    std::vector<NodeProperties>getNodesData();
 
     void updateNodeData(NodeProperties* nodeProperties);
 
     void updateAllNodeData(std::vector<NodeProperties*> nodeProperties);
 
-    void addNewChildNode(int parentNodeID);
+    NodeProperties addNewChildNode(int parentNodeID);
 
     QString m_currentMapData;
     QString m_currentMapPath;
+
 private:
+    QDomElement getNodeElementWithID(QDomElement& nodeRoot, int nodeID);
+    QString getMapAttribute(QString mapAttribute);
     void collectNodesData(std::vector<NodeProperties>& nodes, QDomElement& nodeElement);
+    void setTopID();
+    bool recursiveNodeSearch(QDomElement& nodeElement, int nodeID, QDomElement& foundNode);
 };
 
 #endif // MAPDATAMANAGER_H
