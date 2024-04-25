@@ -102,6 +102,7 @@ void MapDataManager::collectNodesData(std::vector<NodeProperties>& nodePropertie
          newNodeData.y = nodeElement.attribute(nodeAttributes::NODE_POSITION_Y).toInt();
          newNodeData.height = nodeElement.attribute(nodeAttributes::NODE_HEIGHT).toInt();
          newNodeData.width = nodeElement.attribute(nodeAttributes::NODE_WIDTH).toInt();
+         newNodeData.children = getChildrenIDs(newNodeData.nodeID);
          nodeProperties.push_back(newNodeData);
          QDomElement firstChild = nodeElement.firstChildElement(nodeElements::CHILDREN);
          const bool nodeHasChildren = firstChild.isNull() == false;
@@ -118,8 +119,13 @@ bool MapDataManager::recursiveNodeSearch(QDomElement& nodeElement, int nodeID, Q
     bool foundYa(false);
     while(foundYa == false || nodeElement.isNull() == false)
     {
-        const bool nodeFound = nodeElement.hasAttribute(nodeAttributes::NODE_ID) &&
-                               nodeElement.attribute(nodeAttributes::NODE_ID) == QString::number(nodeID);
+        if (nodeElement.hasAttribute(nodeAttributes::NODE_ID) == false)
+        {
+            qInfo("WARNING: MapDataManager::recursiveNodeSearch. Found a node without an ID! that's weird innit");
+            break;
+        }
+        const bool nodeFound =  nodeElement.attribute(nodeAttributes::NODE_ID) == QString::number(nodeID);
+        qInfo("Comparing: " + nodeElement.attribute(nodeAttributes::NODE_ID).toUtf8() + " with nodeID " + QString::number(nodeID).toUtf8());
         if (nodeFound)
         {
             foundNode = nodeElement;
@@ -142,6 +148,21 @@ bool MapDataManager::recursiveNodeSearch(QDomElement& nodeElement, int nodeID, Q
 QDomElement MapDataManager::getNodeElementWithID(QDomElement& root, int nodeID)
 {
     QDomElement node;
+    QDomElement firstNode = root.firstChildElement(nodeElements::NODE);
+    bool nodeExisted = recursiveNodeSearch(firstNode, nodeID, node);
+    if (nodeExisted == false)
+    {
+        qInfo("WARNING MapDataManager::getNodeElementWithID did not find the node. That shouldn't happen");
+    }
+    return node;
+}
+
+QDomElement MapDataManager::getNodeElementWithID(int nodeID)
+{
+    QDomElement node;
+    QDomDocument doc;
+    doc.setContent(m_currentMapData);
+    QDomElement root = doc.documentElement();
     QDomElement firstNode = root.firstChildElement(nodeElements::NODE);
     bool nodeExisted = recursiveNodeSearch(firstNode, nodeID, node);
     if (nodeExisted == false)
@@ -199,4 +220,21 @@ NodeProperties MapDataManager::addNewChildNode(int parentNodeID)
 
   qInfo(qUtf8Printable(m_currentMapData));
   return newNodeProperties;
+}
+
+
+std::vector<int> MapDataManager::getChildrenIDs(int parentNodeID)
+{
+    QDomElement parentNode = getNodeElementWithID(parentNodeID);
+    std::vector<int>childIds;
+    QDomElement childrenNodes = parentNode.firstChildElement(nodeElements::CHILDREN);
+    QDomElement childNode = childrenNodes.firstChildElement(nodeElements::NODE);
+    while(childNode.isNull() == false)
+    {
+        qInfo(childNode.attribute(nodeAttributes::NODE_ID).toUtf8());
+        childIds.push_back(childNode.attribute(nodeAttributes::NODE_ID).toInt());
+        childNode = childNode.nextSiblingElement(nodeElements::NODE);
+    }
+
+    return childIds;
 }

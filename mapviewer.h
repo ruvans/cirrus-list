@@ -10,6 +10,7 @@
 #include <QDataStream>
 #include <QPainter>
 #include <QMessageLogger>
+#include <QColor>
 
 
 #include "mapmanager.h"
@@ -36,6 +37,8 @@ public:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
+    void paintEvent(QPaintEvent *event) override;
+
     void addChildForSelectedNode();
     void deleteSelectedNode();
 
@@ -44,7 +47,10 @@ public:
 signals:
     void nodeSelectionChanged(bool active);
 
+
 private:
+    void drawConnectingLines();
+    inline Node* getNodeObject(int nodeID);
     std::unique_ptr<QLabel> m_mainLabel;
     std::vector<Node*>m_nodes;
     QPoint m_lastMousePoint;

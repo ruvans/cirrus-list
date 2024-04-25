@@ -41,23 +41,29 @@ NodeProperties* Node::getNodeProperties()
     return &m_nodeProperties;
 }
 
+void Node::drawBackground()
+{
+
+}
+
 void Node::paintEvent(QPaintEvent* /*event*/)
 {
     const QRect nodeRect(0,0,this->width(), this->height());
 
     QPainter painter(this);
     //paint cloudy background
+    const bool rootNode = m_nodeProperties.nodeID == 0;
+    QString cloudResource(":resources/cloudbackground.png");
     if (isSelected)
     {
-        QPixmap backgroundImg(":resources/activecloudbackground.png");
-        painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
+        cloudResource = rootNode? ":resources/activecloudbackgroundmain.png" : ":resources/activecloudbackground.png";
     }
     else
     {
-        QPixmap backgroundImg(":resources/cloudbackground.png");
-        painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
-
+        cloudResource = rootNode? ":resources/cloudbackgroundmain.png" : ":resources/cloudbackground.png";
     }
+    QPixmap backgroundImg(cloudResource);
+    painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
 
     //write node text
     QFont font;
@@ -103,5 +109,25 @@ void Node::setNewText(QString newText)
     if (newText.isEmpty() == false)
     {
         setText(m_textInput->toPlainText());
+    }
+}
+
+void Node::addChildID(int childNodeID)
+{
+    //welcome my lil baby
+    m_nodeProperties.children.push_back(childNodeID);
+}
+
+void Node::removeChildID(int childNodeID)
+{
+    //begone unwanted child!
+    int index = 0;
+    for (int id : m_nodeProperties.children)
+    {
+        if (id == childNodeID)
+        {
+            m_nodeProperties.children.erase(std::next(m_nodeProperties.children.begin(), index));
+        }
+        index++;
     }
 }

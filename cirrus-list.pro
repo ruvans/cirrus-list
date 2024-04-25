@@ -32,9 +32,10 @@ FORMS += \
     mainwindow.ui
 
 resources.files = \
-    resources/cloudbackground.jpg \
     resources/cloudbackground.png \
+    resources/cloudbackgroundmain.png \
     resources/activecloudbackground.png \
+    resources/activecloudbackgroundmain.png \
     resources/cooltexttitle.png
 
 resources.prefix = /

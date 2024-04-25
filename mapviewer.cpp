@@ -70,6 +70,7 @@ void MapViewer::mousePressEvent(QMouseEvent *event)
     {
         for (Node* node : m_nodes)
         {
+            qInfo(node->getNodeProperties()->nodeText.toUtf8());
             node->setSelected(false);
         }
         emit nodeSelectionChanged(/*active*/false);
@@ -99,10 +100,11 @@ void MapViewer::dropEvent(QDropEvent *event)
         return;
     }
 
-
     QPointF newLocation = event->position() - m_grabbedHotSpot;
     m_grabbedNode->move(newLocation.x() , newLocation.y());
     m_currentMap.updateNodeData(m_grabbedNode->getNodeProperties());
+
+    repaint();
 }
 
 
@@ -123,9 +125,11 @@ void MapViewer::addChildForSelectedNode()
     m_nodes.push_back(new Node(this));
     m_nodes.back()->setNodeProperties(newNp);
     m_nodes.back()->setText("new node");
-    m_nodes.back()->setFixedSize(200,40);
+    m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
     m_nodes.back()->show();
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
+    //tell the parent so it can draw a connecting line
+    m_grabbedNode->addChildID(newNp.nodeID);
 
     m_grabbedNode->setSelected(false);
     m_nodes.back()->setSelected(true);
@@ -142,5 +146,55 @@ void MapViewer::updataDataForNode(Node* node)
 {
     m_currentMap.updateNodeData(node->getNodeProperties());
 }
+
+void MapViewer::paintEvent(QPaintEvent */*event*/)
+{
+    drawConnectingLines();
+}
+
+void MapViewer::drawConnectingLines()
+{
+    QPainter painter(this);
+    QPen pen;
+    pen.setWidth(2);
+    pen.setColor(Qt::darkBlue);
+    painter.setPen(pen);
+    for(auto node : m_nodes)
+    {
+        //see if node has children
+        std::vector<int> kids = node->getNodeProperties()->children;
+        if (kids.size() == 0)//no child nodes, no lines needed.
+        {
+            continue;
+        }
+        //node has kids, draw lines
+        QPoint lineStart, lineEnd;
+        lineStart.setX(node->getNodeProperties()->x + 100);
+        lineStart.setY(node->getNodeProperties()->y + 20);
+        for (auto childID : kids)
+        {
+            Node* childNode = getNodeObject(childID);
+            if (childNode != nullptr)
+            {
+                lineEnd.setX(childNode->getNodeProperties()->x + 100);//todo width and height needs to be dynamic
+                lineEnd.setY(childNode->getNodeProperties()->y + 20); // it will be stored in the node properties later
+                painter.drawLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineEnd.y());
+            }
+        }
+    }
+}
+
+Node* MapViewer::getNodeObject(int nodeID)
+{
+    for (auto node : m_nodes)
+    {
+        if (node->getNodeProperties()->nodeID == nodeID)
+        {
+            return node;
+        }
+    }
+    return nullptr;
+}
+
 //https://stackoverflow.com/questions/18299077/dragging-a-qwidget-in-qt-5
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-fridgemagnets-example.html

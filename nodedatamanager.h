@@ -31,6 +31,7 @@ struct NodeProperties
     int width{400};
     int height{100};
     QString nodeText{""};
+    std::vector<int> children;
 };
 
 /*
@@ -40,8 +41,20 @@ class NodeDataManager
 {
 public:
     NodeDataManager();
+
+    /**
+     * @brief addNodeXml Takes a NodeProperties object and creates a node xml tag populated with the
+     * nodeProperties data
+     * @param nodeProperties[in]
+     * @param newNodeElement[out]
+     */
     static void addNodeXml(NodeProperties& nodeProperties, QDomElement& newNodeElement);
 
+    /**
+     * @brief getInitialNodeData
+     * @param nodeText
+     * @return QDomElement, an empty node xml tag ready for data
+     */
     static QDomElement getInitialNodeData(QString nodeText);
 
 };

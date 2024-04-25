@@ -25,6 +25,16 @@ public:
     void setNodeProperties(NodeProperties);
     NodeProperties* getNodeProperties();
 
+    /**
+     * @brief addChildID Add a child ID to this nodes nodeProperties
+     */
+    void addChildID(int childNodeID);
+
+    /**
+     * @brief removeChildID remove a child ID from this nodes nodeProperties
+     */
+    void removeChildID(int childNodeID);
+
     void setSelected(bool newState);
 
     void showTextInputBox();
@@ -33,7 +43,9 @@ public:
 signals:
     void nodePropertiesChanged(Node *node);
 
+
 private:
+    void drawBackground();
     NodeProperties m_nodeProperties;
     bool isSelected{false};
     std::unique_ptr<QPlainTextEdit> m_textInput;

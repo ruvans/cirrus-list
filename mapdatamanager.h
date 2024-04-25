@@ -62,11 +62,21 @@ public:
 
     NodeProperties addNewChildNode(int parentNodeID);
 
+    /**
+     * @brief getChildrenIDs Get a list of the children of a given node.
+     * This only includes direct children, no grandkiddies included.
+     * @param parentNodeID The ID of the parent node
+     * @return A list of children node IDs connected to the parent node,
+     * may be empty if there are none.
+     */
+    std::vector<int> getChildrenIDs(int parentNodeID);
+
     QString m_currentMapData;
     QString m_currentMapPath;
 
 private:
     QDomElement getNodeElementWithID(QDomElement& nodeRoot, int nodeID);
+    QDomElement getNodeElementWithID(int nodeID);//same as above but if the QDomElement is only needed for data collecting
     QString getMapAttribute(QString mapAttribute);
     void collectNodesData(std::vector<NodeProperties>& nodes, QDomElement& nodeElement);
     void setTopID();
