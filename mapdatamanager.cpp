@@ -238,3 +238,48 @@ std::vector<int> MapDataManager::getChildrenIDs(int parentNodeID)
 
     return childIds;
 }
+
+int MapDataManager::getParentID(int childNodeID)
+{
+    int ID(-1);
+    QDomElement node;
+    QDomDocument doc;
+    doc.setContent(m_currentMapData);
+    QDomElement root = doc.documentElement();
+    QDomElement firstNode = root.firstChildElement(nodeElements::NODE);
+    bool nodeExisted = recursiveNodeSearch(firstNode, childNodeID, node);
+    node = node.parentNode().parentNode().toElement();
+    if (nodeExisted == true && node.hasAttribute(nodeAttributes::NODE_ID))
+    {
+        ID = node.attribute(nodeAttributes::NODE_ID).toInt();
+    }
+    return ID;
+}
+
+
+void MapDataManager::removeNode(int nodeID, int& parentID)
+{
+    QDomElement node;
+    QDomElement parentNode, childrenNode;
+    QDomDocument doc;
+    doc.setContent(m_currentMapData);
+    QDomElement root = doc.documentElement();
+    QDomElement firstNode = root.firstChildElement(nodeElements::NODE);
+    bool nodeExisted = recursiveNodeSearch(firstNode, nodeID, node);
+
+    if (nodeExisted == true)
+    {
+        childrenNode = node.parentNode().toElement();
+        parentNode = node.parentNode().parentNode().toElement();
+        if (parentNode.hasAttribute(nodeAttributes::NODE_ID))
+        {
+            parentID = parentNode.attribute(nodeAttributes::NODE_ID).toInt();
+            QDomNode updatedNode = childrenNode.removeChild(node);
+            if (updatedNode.isNull())
+            {
+                qInfo("WARNING: MapDataManager::removeNode. Failed to delete node");
+            }
+        }
+    }
+    m_currentMapData = doc.toString();
+}

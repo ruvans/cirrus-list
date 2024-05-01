@@ -115,16 +115,12 @@ void MapViewer::dragEnterEvent(QDragEnterEvent *event)
 
 void MapViewer::addChildForSelectedNode()
 {
-    qInfo("mapViewer::addChildForSelectedNode");
-    if (m_grabbedNode == nullptr)
-    {
-        return;
-    }
+    if (m_grabbedNode == nullptr) {return;}
+
     int parentID = m_grabbedNode->getNodeProperties()->nodeID;
     NodeProperties newNp = m_currentMap.addNewChildNode(parentID);
     m_nodes.push_back(new Node(this));
     m_nodes.back()->setNodeProperties(newNp);
-    m_nodes.back()->setText("new node");
     m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
     m_nodes.back()->show();
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
@@ -138,6 +134,33 @@ void MapViewer::addChildForSelectedNode()
 
 void MapViewer::deleteSelectedNode()
 {
+    if (m_grabbedNode == nullptr) {return;}
+
+    const int ripID = m_grabbedNode->getNodeProperties()->nodeID;
+    int nodeIndex(0);
+
+    for(Node* node : m_nodes)
+    {
+        if (m_grabbedNode == node)
+        {
+            m_grabbedNode->hide();
+            m_nodes.erase(std::next(m_nodes.begin(), nodeIndex));
+            break;
+        }
+        nodeIndex++;
+    }
+
+    int parentNodeID=-1;
+    m_currentMap.removeNode(ripID, parentNodeID);
+    // then find parent node and remove the childID
+    if (parentNodeID == -1)
+    {
+        qInfo("WARNING MapViewer::deleteSelectedNode. cannot find parent node");
+        return;
+    }
+    Node* parent = getNodeObject(parentNodeID);
+    if (parent != nullptr){parent->removeChildID(ripID);}
+    repaint();
 
 }
 

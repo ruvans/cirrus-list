@@ -71,6 +71,20 @@ public:
      */
     std::vector<int> getChildrenIDs(int parentNodeID);
 
+    /**
+     * @brief getParentID Search for the childNode and return its parents ID
+     * @param childNodeID ID of the child node
+     * @return ID of the parent node, or -1 if not found.
+     */
+    int getParentID(int childNodeID);
+
+    /**
+     * @brief removeNode deleted a node from the map data
+     * @param[in] nodeID the ID of the node to be deleted
+     * @param[out] the parentID of the deleted node.
+     */
+    void removeNode(int nodeID, int& parentID);
+
     QString m_currentMapData;
     QString m_currentMapPath;
 
