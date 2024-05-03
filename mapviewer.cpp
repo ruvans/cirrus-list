@@ -126,6 +126,7 @@ void MapViewer::addChildForSelectedNode()
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
     //tell the parent so it can draw a connecting line
     m_grabbedNode->addChildID(newNp.nodeID);
+    repaint();//draw new line now
 
     m_grabbedNode->setSelected(false);
     m_nodes.back()->setSelected(true);
