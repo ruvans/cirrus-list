@@ -93,9 +93,11 @@ void Node::moveEvent(QMoveEvent */*event*/)
      m_textInput = std::make_unique<QPlainTextEdit>();
      m_textInput->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
      m_layout->addWidget(m_textInput.get());
-     m_textInput->grabKeyboard();
-     m_textInput->ensureCursorVisible();//is it visible? I'm not seeing it
+     m_textInput->appendPlainText(m_nodeProperties.nodeText);
+     m_textInput->moveCursor(QTextCursor::End);
+     m_textInput->setFocus();
  }
+
  void Node::hideTextInputBox()
  {
      qInfo("attempting to remove text widget");
