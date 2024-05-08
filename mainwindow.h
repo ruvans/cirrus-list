@@ -34,6 +34,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void showMap(QString mapFile);
+    void showMapLoadDisplay();
     std::unique_ptr<MapLoadDisplay> m_mapLoadDisplay;
     //MapLoadDisplay m_mapLoadDisplay;
     std::unique_ptr<MapViewer> m_mapViewer;

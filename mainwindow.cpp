@@ -11,18 +11,24 @@ MainWindow::MainWindow(QWidget *parent)
     //node that some older buttons have been set via the form
     connect(ui->addChildButton, SIGNAL(clicked()), this, SLOT(on_createChildNode_clicked()));
     connect(ui->deleteNodeButton, SIGNAL(clicked()), this, SLOT(on_deleteNode_clicked()));
+    //menu bar buttons
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(on_newButton_clicked()));
+    connect(ui->actionLoad, SIGNAL(triggered()), this, SLOT(on_loadButton_clicked()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(on_saveButton_clicked()));
 
     //https://doc.qt.io/qt-6/stylesheet-examples.html
     setStyleSheet(
                 "#centralwidget { background-color: #a2d2ff; }"
                 "QPushButton { background-color: #cdb4db; }"
                 "QStatusBar { background-color: #7BB1E4; }"
+                "QMenuBar { background-color: #7BB1E4; }"
                 "QWidget#scrollAreaWidgetContents { background-color: transparent; }"//otherwise hard to colour main widgets
                 "QScrollArea { background-color: #BDDFFE; }"
                 "QWidget#mapArea { background-color: red; }"//this makes the scrollarea colour show properly(????)
                                                             //nothing is showing up red, but if this isn't here then the blue I want goes away???
                 );
 
+    showMapLoadDisplay();
 }
 
 MainWindow::~MainWindow()
@@ -54,7 +60,7 @@ void MainWindow::on_newButton_clicked()
     }
 }
 
-void MainWindow::on_loadButton_clicked()
+void MainWindow::showMapLoadDisplay()
 {
     m_mapLoadDisplay = std::make_unique<MapLoadDisplay>();
     m_mapLoadDisplay->resize(200, 200);
@@ -62,6 +68,11 @@ void MainWindow::on_loadButton_clicked()
     QObject::connect(m_mapLoadDisplay.get(), &MapLoadDisplay::mapItemClicked, this, &MainWindow::on_mapToLoadChosen);
     ui->scrollArea->setWidget(m_mapLoadDisplay.get());
     ui->scrollArea->show();
+}
+
+void MainWindow::on_loadButton_clicked()
+{
+    showMapLoadDisplay();
 }
 
 void MainWindow::on_saveButton_clicked()
