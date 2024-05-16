@@ -239,6 +239,36 @@ std::vector<int> MapDataManager::getChildrenIDs(int parentNodeID)
     return childIds;
 }
 
+std::vector<int> MapDataManager::getChildrenIDsRecursive(int parentNodeID)
+{
+    std::vector<int>childIDs;
+    QDomElement parentNode = getNodeElementWithID(parentNodeID);
+    QDomElement childrenNodes = parentNode.firstChildElement(nodeElements::CHILDREN);
+    QDomElement childNode = childrenNodes.firstChildElement(nodeElements::NODE);
+    if (childNode.isNull() == false)
+    {
+        getChildrenIDsRecursiveCollectIDs(parentNode, childIDs);
+    }
+    return childIDs;
+}
+
+void MapDataManager::getChildrenIDsRecursiveCollectIDs(QDomElement& parentNode, std::vector<int>& childIDs)
+{
+    QDomElement childrenNodes = parentNode.firstChildElement(nodeElements::CHILDREN);
+    QDomElement childNode = childrenNodes.firstChildElement(nodeElements::NODE);
+    while(childNode.isNull() == false)
+    {
+        childIDs.push_back(childNode.attribute(nodeAttributes::NODE_ID).toInt());
+        QDomElement firstGrandchild = childNode.firstChildElement(nodeElements::CHILDREN);
+        const bool childNodeHasChildren = firstGrandchild.isNull() == false;
+        if (childNodeHasChildren)
+        {
+          getChildrenIDsRecursiveCollectIDs(childNode, childIDs);
+        }
+        childNode = childNode.nextSiblingElement(nodeElements::NODE);
+    }
+}
+
 int MapDataManager::getParentID(int childNodeID)
 {
     int ID(-1);

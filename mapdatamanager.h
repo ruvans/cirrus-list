@@ -64,12 +64,21 @@ public:
 
     /**
      * @brief getChildrenIDs Get a list of the children of a given node.
-     * This only includes direct children, no grandkiddies included.
+     * this only includes direct children, no grandkiddies included.
      * @param parentNodeID The ID of the parent node
      * @return A list of children node IDs connected to the parent node,
      * may be empty if there are none.
      */
     std::vector<int> getChildrenIDs(int parentNodeID);
+
+    /**
+     * @brief getChildrenIDsRecursive Get a list of the children of
+     * a given node, including all grandchild nodes
+     * @param parentNodeID The ID of the parent node
+     * @return A list of children node IDs connected to the parent node,
+     * may be empty if there are none.
+     */
+    std::vector<int> getChildrenIDsRecursive(int parentNodeID);
 
     /**
      * @brief getParentID Search for the childNode and return its parents ID
@@ -81,7 +90,7 @@ public:
     /**
      * @brief removeNode deleted a node from the map data
      * @param[in] nodeID the ID of the node to be deleted
-     * @param[out] the parentID of the deleted node.
+     * @param[out] parentID The ID of the deleted nodes parent. They deserve to know
      */
     void removeNode(int nodeID, int& parentID);
 
@@ -92,6 +101,7 @@ private:
     QDomElement getNodeElementWithID(QDomElement& nodeRoot, int nodeID);
     QDomElement getNodeElementWithID(int nodeID);//same as above but if the QDomElement is only needed for data collecting
     QString getMapAttribute(QString mapAttribute);
+    void getChildrenIDsRecursiveCollectIDs(QDomElement& nodeElement, std::vector<int>& childIDs);
     void collectNodesData(std::vector<NodeProperties>& nodes, QDomElement& nodeElement);
     void setTopID();
     bool recursiveNodeSearch(QDomElement& nodeElement, int nodeID, QDomElement& foundNode);

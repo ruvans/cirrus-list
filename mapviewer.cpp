@@ -138,17 +138,29 @@ void MapViewer::deleteSelectedNode()
     if (m_grabbedNode == nullptr) {return;}
 
     const int ripID = m_grabbedNode->getNodeProperties()->nodeID;
-    int nodeIndex(0);
-
-    for(Node* node : m_nodes)
+    //collateral damage
+    std::vector<int>childNodeIDs = m_currentMap.getChildrenIDsRecursive(ripID);
+    //get rid of the dead nodes
+    for(int i = 0; i < (int)m_nodes.size(); i++)
     {
-        if (m_grabbedNode == node)
+        if (m_grabbedNode == m_nodes.at(i))
         {
             m_grabbedNode->hide();
-            m_nodes.erase(std::next(m_nodes.begin(), nodeIndex));
+            m_nodes.erase(std::next(m_nodes.begin(), i));
             break;
         }
-        nodeIndex++;
+    }
+    for(auto childID : childNodeIDs)
+    {
+        for(int i = 0; i < (int)m_nodes.size(); i++)
+        {
+            if (m_nodes.at(i)->getNodeProperties()->nodeID == childID)
+            {
+                m_nodes.at(i)->hide();
+                m_nodes.erase(std::next(m_nodes.begin(), i));
+                continue;
+            }
+        }
     }
 
     int parentNodeID=-1;
@@ -161,8 +173,8 @@ void MapViewer::deleteSelectedNode()
     }
     Node* parent = getNodeObject(parentNodeID);
     if (parent != nullptr){parent->removeChildID(ripID);}
-    repaint();
 
+    repaint();
 }
 
 
@@ -183,6 +195,7 @@ void MapViewer::drawConnectingLines()
     pen.setWidth(2);
     pen.setColor(Qt::darkBlue);
     painter.setPen(pen);
+    painter.setRenderHint( QPainter::Antialiasing );
     for(auto node : m_nodes)
     {
         //see if node has children
