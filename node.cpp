@@ -3,6 +3,12 @@
 Node::Node(QWidget *parent) : QWidget(parent)
 {
     m_layout = std::make_unique<QHBoxLayout>(this);
+    m_layout->addWidget(&m_text);
+
+    m_text.setWordWrap(true);
+    m_text.setAlignment(Qt::AlignCenter);
+    m_text.setText("text here");
+    m_text.setAttribute(Qt::WA_TransparentForMouseEvents);//dont let user drag the label!!
 }
 
 void Node::setSelected(bool newState)
@@ -25,7 +31,7 @@ void Node::setSelected(bool newState)
 void Node::setText(QString newText)
 {
     m_nodeProperties.nodeText = newText;
-    repaint();
+    m_text.setText(newText);
 
     emit nodePropertiesChanged(this);
 }
@@ -33,6 +39,7 @@ void Node::setText(QString newText)
 void Node::setNodeProperties(NodeProperties properties)
 {
     m_nodeProperties = properties;
+    m_text.setText(properties.nodeText);
     move(properties.x, properties.y);
 }
 
@@ -65,13 +72,6 @@ void Node::paintEvent(QPaintEvent* /*event*/)
     QPixmap backgroundImg(cloudResource);
     painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
 
-    //write node text
-    QFont font;
-    font.setStyleStrategy(QFont::ForceOutline);
-    painter.setFont(font);
-    painter.setPen(Qt::black);
-    painter.drawText(nodeRect, Qt::AlignCenter, m_nodeProperties.nodeText);
-    painter.end();
 }
 
 void Node::moveEvent(QMoveEvent */*event*/)
@@ -91,11 +91,17 @@ void Node::moveEvent(QMoveEvent */*event*/)
  {
      m_textInput.release();
      m_textInput = std::make_unique<QPlainTextEdit>();
-     m_textInput->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+     m_textInput->setWordWrapMode(QTextOption::WordWrap);
+
+     m_layout->removeWidget(&m_text);
      m_layout->addWidget(m_textInput.get());
-     m_textInput->appendPlainText(m_nodeProperties.nodeText);
+     m_textInput->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+     m_textInput->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+     m_textInput->setWordWrapMode(QTextOption::WordWrap);
+     m_textInput->appendPlainText(m_text.text());
      m_textInput->moveCursor(QTextCursor::End);
      m_textInput->setFocus();
+     QObject::connect(m_textInput->verticalScrollBar(), &QScrollBar::rangeChanged, this, &Node::inputTextRowsChanged);
  }
 
  void Node::hideTextInputBox()
@@ -103,6 +109,7 @@ void Node::moveEvent(QMoveEvent */*event*/)
      qInfo("attempting to remove text widget");
      m_textInput->hide();
      m_layout->removeWidget(m_textInput.get());
+     m_layout->addWidget(&m_text);
      m_textInput.release();
  }
 
@@ -111,6 +118,18 @@ void Node::setNewText(QString newText)
     if (newText.isEmpty() == false)
     {
         setText(m_textInput->toPlainText());
+    }
+}
+
+void Node::inputTextRowsChanged()
+{
+    qInfo("input text changed");
+    int lineCount = m_textInput->document()->documentLayout()->documentSize().height();
+    if (lineCount > 1)
+    {
+        //resize box so user can see all their wonderful words
+        int newHeight = this->height() + 12;
+        this->setFixedHeight(newHeight);
     }
 }
 

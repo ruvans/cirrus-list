@@ -121,11 +121,10 @@ bool MapDataManager::recursiveNodeSearch(QDomElement& nodeElement, int nodeID, Q
     {
         if (nodeElement.hasAttribute(nodeAttributes::NODE_ID) == false)
         {
-            qInfo("WARNING: MapDataManager::recursiveNodeSearch. Found a node without an ID! that's weird innit");
+            //sometimes the element is in another node branch, it happens.
             break;
         }
         const bool nodeFound =  nodeElement.attribute(nodeAttributes::NODE_ID) == QString::number(nodeID);
-        qInfo("Comparing: " + nodeElement.attribute(nodeAttributes::NODE_ID).toUtf8() + " with nodeID " + QString::number(nodeID).toUtf8());
         if (nodeFound)
         {
             foundNode = nodeElement;

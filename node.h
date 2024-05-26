@@ -7,6 +7,9 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QHBoxLayout>
+#include <QObject>
+#include <QScrollBar>
+#include <QLabel>
 #include "nodedatamanager.h"
 
 /* Class: Node
@@ -40,9 +43,12 @@ public:
     void showTextInputBox();
     void hideTextInputBox();
     void setNewText(QString newText);
+
 signals:
     void nodePropertiesChanged(Node *node);
 
+public slots:
+    void inputTextRowsChanged();
 
 private:
     void drawBackground();
@@ -50,6 +56,7 @@ private:
     bool isSelected{false};
     std::unique_ptr<QPlainTextEdit> m_textInput;
     std::unique_ptr<QHBoxLayout> m_layout;
+    QLabel m_text;
 
 };
 
