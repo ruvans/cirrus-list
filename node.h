@@ -48,15 +48,19 @@ signals:
     void nodePropertiesChanged(Node *node);
 
 public slots:
+    // Attached to the vert slider so I can find out when a
+    // new line is needed while the user is writing in a textbox
     void inputTextRowsChanged();
 
 private:
-    void drawBackground();
+    void drawCloudBackground();
+    void drawCloudTile(QPainter* painter, QPixmap* pixmap, int x, int y, int tileSize, int tileNum);
     NodeProperties m_nodeProperties;
     bool isSelected{false};
     std::unique_ptr<QPlainTextEdit> m_textInput;
     std::unique_ptr<QHBoxLayout> m_layout;
     QLabel m_text;
+    int m_minimumWidth{100};
 
 };
 

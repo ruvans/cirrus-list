@@ -94,7 +94,9 @@
        <normaloff>:/resources/button_addcloud.png</normaloff>
        <normalon>:/resources/button_addcloud.png</normalon>
        <disabledoff>:/resources/button_addcloud.png</disabledoff>
-       <disabledon>:/resources/button_addcloud.png</disabledon>:/resources/button_addcloud.png</iconset>
+       <disabledon>:/resources/button_addcloud.png</disabledon>
+       <activeon>:/resources/button_addcloud_down.png</activeon>
+       <selectedon>:/resources/button_addcloud_down.png</selectedon>:/resources/button_addcloud.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -118,7 +120,7 @@
      <property name="icon">
       <iconset resource="../build-cirrus-list-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/debug/qmake_resources.qrc">
        <normaloff>:/resources/button_deletecloud.png</normaloff>
-       <normalon>:/resources/button_deletecloud.png</normalon>
+       <normalon>:/resources/button_deletecloud_down.png</normalon>
        <disabledoff>:/resources/button_deletecloud.png</disabledoff>
        <disabledon>:/resources/button_deletecloud.png</disabledon>:/resources/button_deletecloud.png</iconset>
      </property>

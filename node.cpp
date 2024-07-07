@@ -9,6 +9,8 @@ Node::Node(QWidget *parent) : QWidget(parent)
     m_text.setAlignment(Qt::AlignCenter);
     m_text.setText("text here");
     m_text.setAttribute(Qt::WA_TransparentForMouseEvents);//dont let user drag the label!!
+    setMinimumWidth(150);
+    setMinimumHeight(20);
 }
 
 void Node::setSelected(bool newState)
@@ -48,30 +50,103 @@ NodeProperties* Node::getNodeProperties()
     return &m_nodeProperties;
 }
 
-void Node::drawBackground()
+void Node::drawCloudBackground()
 {
+    const int drawnTileSize = 20;
+   // const QRect nodeRect(0,0,this->width(), this->height());
+    QPainter painter(this);
+    //paint cloudy background
+    const bool rootNode = m_nodeProperties.nodeID == 0;
+    //QString cloudResource(":resources/cloudbackground.png");
+
+    //QString cloudBorderTop(":resources/cloud_border_top.png");
+    //QString cloudBorderTopCornerL(":resources/cloud_border_toplional.png");
+    //if (isSelected)
+    //{
+    //    cloudResource = rootNode? ":resources/activecloudbackgroundmain.png" : ":resources/activecloudbackground.png";
+    //}
+    //else
+    //{
+    //    cloudResource = rootNode? ":resources/cloudbackgroundmain.png" : ":resources/cloudbackground.png";
+    //}
+    //old style:
+    //QPixmap backgroundImg(cloudResource);
+    //painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
+    //new style!:
+
+    /*
+     *
+    :resources/cloud_border_spritesheet.png
+    :resources/cloud_border_spritesheet_root.png
+    :resources/cloud_border_spritesheet_root_selected.png
+    :resources/cloud_border_spritesheet_selected.png
+*/
+    QString cloudBorder;
+    if (rootNode)
+    {
+        cloudBorder = isSelected? ":resources/cloud_border_spritesheet_root_selected.png" : ":resources/cloud_border_spritesheet_root.png";
+    }
+    else
+    {
+        cloudBorder = isSelected? ":resources/cloud_border_spritesheet_selected.png" : ":resources/cloud_border_spritesheet.png";
+    }
+
+
+    QPixmap cloudTiles(cloudBorder);
+    //img is 25 px, only looks correct at 20px size for some reason(???)
+
+
+    int x = 0;
+    int y = 0;
+    //top left
+    drawCloudTile(&painter, &cloudTiles, x, y, drawnTileSize, /*tileID*/ 4);
+    //top
+    x = drawnTileSize;
+    for(; x < width()-(drawnTileSize*2); x+=drawnTileSize)
+    {
+        drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 0);
+    }
+    //top right
+    drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 5);
+    //middle - left, right and fill
+    y = drawnTileSize;
+    for(; y < height() - (drawnTileSize*2); y+=drawnTileSize)
+    {
+        drawCloudTile(&painter, &cloudTiles, 0, y,drawnTileSize, /*tileID*/ 2); // left bumps
+        drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 3); //right bumps
+        for (int xi = drawnTileSize; xi < width()-(drawnTileSize*2); xi+=drawnTileSize)
+        {
+            drawCloudTile(&painter, &cloudTiles, xi, y,drawnTileSize, /*tileID*/ 8); //fill
+        }
+    }
+    //bottom left
+    x = 0;
+    y = std::min( y, height() - 20);
+    drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 7);
+    x = drawnTileSize;
+    //bottom row
+    for(; x < width()-(drawnTileSize*2); x+=drawnTileSize)
+    {
+        drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 1);
+    }
+    //bottom right
+    drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 6);
+
+}
+
+void Node::drawCloudTile(QPainter* painter, QPixmap* pixmap, int x, int y, int drawnTileSize, int tileNum)
+{
+    int spriteTileSize = 25;
+    painter->drawPixmap(x,y,drawnTileSize, drawnTileSize,
+                       *pixmap,
+                       spriteTileSize*tileNum, 0,
+                       spriteTileSize, spriteTileSize);
 
 }
 
 void Node::paintEvent(QPaintEvent* /*event*/)
 {
-    const QRect nodeRect(0,0,this->width(), this->height());
-
-    QPainter painter(this);
-    //paint cloudy background
-    const bool rootNode = m_nodeProperties.nodeID == 0;
-    QString cloudResource(":resources/cloudbackground.png");
-    if (isSelected)
-    {
-        cloudResource = rootNode? ":resources/activecloudbackgroundmain.png" : ":resources/activecloudbackground.png";
-    }
-    else
-    {
-        cloudResource = rootNode? ":resources/cloudbackgroundmain.png" : ":resources/cloudbackground.png";
-    }
-    QPixmap backgroundImg(cloudResource);
-    painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
-
+    drawCloudBackground();
 }
 
 void Node::moveEvent(QMoveEvent */*event*/)
@@ -128,8 +203,10 @@ void Node::inputTextRowsChanged()
     if (lineCount > 1)
     {
         //resize box so user can see all their wonderful words
-        int newHeight = this->height() + 12;
+        int margin(12);
+        int newHeight = this->height() + margin;
         this->setFixedHeight(newHeight);
+        m_nodeProperties.height = newHeight;
     }
 }
 

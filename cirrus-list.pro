@@ -36,7 +36,17 @@ resources.files = \
     resources/cloudbackgroundmain.png \
     resources/activecloudbackground.png \
     resources/activecloudbackgroundmain.png \
-    resources/cooltexttitle.png
+    resources/cooltexttitle.png\
+    resources/button_addcloud.png\
+    resources/button_addcloud_down.png\
+    resources/button_deletecloud.png\
+    resources/button_deletecloud_down.png\
+    resources/cloud_border_spritesheet.png\
+    resources/cloud_border_spritesheet_root.png\
+    resources/cloud_border_spritesheet_root_selected.png\
+    resources/cloud_border_spritesheet_selected.png
+
+
 
 resources.prefix = /
 

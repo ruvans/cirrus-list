@@ -15,7 +15,7 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
         std::cout << "making node:" << nodeData.nodeText.toStdString() << std::endl;
         m_nodes.push_back(new Node(this));
         m_nodes.back()->setNodeProperties(nodeData);
-        m_nodes.back()->setFixedSize(200,40);
+        //m_nodes.back()->setFixedSize(/*width*/200,/*height*/40);
         QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
     }
 
@@ -121,7 +121,7 @@ void MapViewer::addChildForSelectedNode()
     NodeProperties newNp = m_currentMap.addNewChildNode(parentID);
     m_nodes.push_back(new Node(this));
     m_nodes.back()->setNodeProperties(newNp);
-    m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
+    //m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
     m_nodes.back()->show();
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
     //tell the parent so it can draw a connecting line
@@ -206,15 +206,15 @@ void MapViewer::drawConnectingLines()
         }
         //node has kids, draw lines
         QPoint lineStart, lineEnd;
-        lineStart.setX(node->getNodeProperties()->x + 100);
-        lineStart.setY(node->getNodeProperties()->y + 20);
+        lineStart.setX(node->getNodeProperties()->x + (node->width()/2));
+        lineStart.setY(node->getNodeProperties()->y + (node->height()/2));
         for (auto childID : kids)
         {
             Node* childNode = getNodeObject(childID);
             if (childNode != nullptr)
             {
-                lineEnd.setX(childNode->getNodeProperties()->x + 100);//todo width and height needs to be dynamic
-                lineEnd.setY(childNode->getNodeProperties()->y + 20); // it will be stored in the node properties later
+                lineEnd.setX(childNode->getNodeProperties()->x + (node->width()/2));
+                lineEnd.setY(childNode->getNodeProperties()->y + (node->height()/2));
                 painter.drawLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineEnd.y());
             }
         }
