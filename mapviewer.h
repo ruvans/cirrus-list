@@ -44,6 +44,15 @@ public:
 
     void updataDataForNode(Node* node);
 
+    /** Makes all nodes unselected
+    */
+    void unselectAllNodes();
+
+    /** Initiates a node drag with a copy of the node on the cursor
+    @param node The selected node for dragging
+    @param QPoint the current position of the mouse pointer */
+    void startNodeDrag(Node* node, QPoint mousePos);
+
 signals:
     void nodeSelectionChanged(bool active);
 

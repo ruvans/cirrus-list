@@ -15,7 +15,7 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
         std::cout << "making node:" << nodeData.nodeText.toStdString() << std::endl;
         m_nodes.push_back(new Node(this));
         m_nodes.back()->setNodeProperties(nodeData);
-        //m_nodes.back()->setFixedSize(/*width*/200,/*height*/40);
+        m_nodes.back()->setGeometry(nodeData.x, nodeData.y, nodeData.width, nodeData.height);
         QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
     }
 
@@ -38,44 +38,18 @@ void MapViewer::saveActiveMap()
 
 void MapViewer::mousePressEvent(QMouseEvent *event)
 {
-    qInfo("mousePressEvent");
     m_grabbedNode = static_cast<Node*>(childAt(event->pos()));
     bool nodeWasGrabbed = m_grabbedNode != nullptr;
 
     if (nodeWasGrabbed && event->button() == Qt::LeftButton)
     {
-        //This will make sure only the grabbed node is selected
-        //that way we can be certain whose child the new node will belong to
-        for(auto node: m_nodes)
-        {
-            bool selectedNode = node == m_grabbedNode;
-            node->setSelected(selectedNode);
-        }
-        //m_grabbedNode->setSelected(true);
-        emit nodeSelectionChanged(/*active*/true);
-
-        QPoint hotSpot = event->pos() - m_grabbedNode->pos();
-        m_grabbedHotSpot = hotSpot;
-        QDrag *drag = new QDrag(this);
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setText("application/x-cirrusmap");
-        QPixmap tempImg = m_grabbedNode->grab();
-        drag->setMimeData(mimeData);
-        drag->setPixmap(tempImg);
-        drag->setHotSpot(hotSpot);
-        drag->exec();
+        startNodeDrag(m_grabbedNode, event->pos());
     }
 
     if (!nodeWasGrabbed)
     {
-        for (Node* node : m_nodes)
-        {
-            qInfo(node->getNodeProperties()->nodeText.toUtf8());
-            node->setSelected(false);
-        }
-        emit nodeSelectionChanged(/*active*/false);
+        unselectAllNodes();
     }
-
 }
 
 void MapViewer::mouseReleaseEvent(QMouseEvent */*event*/)
@@ -232,6 +206,39 @@ Node* MapViewer::getNodeObject(int nodeID)
     }
     return nullptr;
 }
+
+void MapViewer::startNodeDrag(Node* draggedNode, QPoint mousePos)
+{
+    //This will make sure only the grabbed node is selected
+    //that way we can be certain whose child the new node will belong to
+    for(auto node: m_nodes)
+    {
+        bool selectedNode = node == draggedNode;
+        node->setSelected(selectedNode);
+    }
+    emit nodeSelectionChanged(/*active*/true);
+
+    QPoint hotSpot = mousePos - m_grabbedNode->pos();
+    m_grabbedHotSpot = hotSpot;
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setText("application/x-cirrusmap");
+    QPixmap tempImg = m_grabbedNode->grab();
+    drag->setMimeData(mimeData);
+    drag->setPixmap(tempImg);
+    drag->setHotSpot(hotSpot);
+    drag->exec();
+}
+
+void MapViewer::unselectAllNodes()
+{
+    for (Node* node : m_nodes)
+    {
+        node->setSelected(false);
+    }
+    emit nodeSelectionChanged(/*active*/false);
+}
+
 
 //https://stackoverflow.com/questions/18299077/dragging-a-qwidget-in-qt-5
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-fridgemagnets-example.html

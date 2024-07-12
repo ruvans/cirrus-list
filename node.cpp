@@ -42,7 +42,6 @@ void Node::setNodeProperties(NodeProperties properties)
 {
     m_nodeProperties = properties;
     m_text.setText(properties.nodeText);
-    move(properties.x, properties.y);
 }
 
 NodeProperties* Node::getNodeProperties()
@@ -57,30 +56,7 @@ void Node::drawCloudBackground()
     QPainter painter(this);
     //paint cloudy background
     const bool rootNode = m_nodeProperties.nodeID == 0;
-    //QString cloudResource(":resources/cloudbackground.png");
 
-    //QString cloudBorderTop(":resources/cloud_border_top.png");
-    //QString cloudBorderTopCornerL(":resources/cloud_border_toplional.png");
-    //if (isSelected)
-    //{
-    //    cloudResource = rootNode? ":resources/activecloudbackgroundmain.png" : ":resources/activecloudbackground.png";
-    //}
-    //else
-    //{
-    //    cloudResource = rootNode? ":resources/cloudbackgroundmain.png" : ":resources/cloudbackground.png";
-    //}
-    //old style:
-    //QPixmap backgroundImg(cloudResource);
-    //painter.drawPixmap(0,0,nodeRect.width(),nodeRect.height(), backgroundImg);
-    //new style!:
-
-    /*
-     *
-    :resources/cloud_border_spritesheet.png
-    :resources/cloud_border_spritesheet_root.png
-    :resources/cloud_border_spritesheet_root_selected.png
-    :resources/cloud_border_spritesheet_selected.png
-*/
     QString cloudBorder;
     if (rootNode)
     {
@@ -90,8 +66,6 @@ void Node::drawCloudBackground()
     {
         cloudBorder = isSelected? ":resources/cloud_border_spritesheet_selected.png" : ":resources/cloud_border_spritesheet.png";
     }
-
-
     QPixmap cloudTiles(cloudBorder);
     //img is 25 px, only looks correct at 20px size for some reason(???)
 
