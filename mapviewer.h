@@ -28,11 +28,7 @@ public:
     explicit MapViewer(QString const& mapPath, QWidget *parent = nullptr);
 
     void saveActiveMap();
-
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-
+    void mousePressEvent(QMouseEvent *event)override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
@@ -52,6 +48,11 @@ public:
     @param node The selected node for dragging
     @param QPoint the current position of the mouse pointer */
     void startNodeDrag(Node* node, QPoint mousePos);
+
+    /**
+     * @see Node::signalNodeClicked
+     */
+    void nodeWasClicked(Node* node);
 
 signals:
     void nodeSelectionChanged(bool active);

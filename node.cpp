@@ -9,22 +9,25 @@ Node::Node(QWidget *parent) : QWidget(parent)
     m_text.setAlignment(Qt::AlignCenter);
     m_text.setText("text here");
     m_text.setAttribute(Qt::WA_TransparentForMouseEvents);//dont let user drag the label!!
-    setMinimumWidth(150);
-    setMinimumHeight(20);
+    setMinimumWidth(gridSize*15);
+    setMinimumHeight(gridSize*2);
+
+    //turn on mouse tracking so mouseMoveEvent works
+    setMouseTracking(true);
 }
 
-void Node::setSelected(bool newState)
+void Node::setSelected(bool newSelectedState)
 {
-    bool newTextEntred = (newState == false) && (m_textInput != nullptr);
+    bool newTextEntred = (newSelectedState == false) && (m_textInput != nullptr);
     if (newTextEntred)
     {
         setNewText(m_textInput->toPlainText());
         hideTextInputBox();
     }
 
-    if (newState != isSelected)
+    if (newSelectedState != isSelected)
     {
-        isSelected = newState;
+        isSelected = newSelectedState;
         repaint();
     }
 
@@ -51,8 +54,8 @@ NodeProperties* Node::getNodeProperties()
 
 void Node::drawCloudBackground()
 {
+    //img is 25 px, only looks correct at 20px size for some reason(???)
     const int drawnTileSize = 20;
-   // const QRect nodeRect(0,0,this->width(), this->height());
     QPainter painter(this);
     //paint cloudy background
     const bool rootNode = m_nodeProperties.nodeID == 0;
@@ -67,8 +70,6 @@ void Node::drawCloudBackground()
         cloudBorder = isSelected? ":resources/cloud_border_spritesheet_selected.png" : ":resources/cloud_border_spritesheet.png";
     }
     QPixmap cloudTiles(cloudBorder);
-    //img is 25 px, only looks correct at 20px size for some reason(???)
-
 
     int x = 0;
     int y = 0;
@@ -87,7 +88,7 @@ void Node::drawCloudBackground()
     for(; y < height() - (drawnTileSize*2); y+=drawnTileSize)
     {
         drawCloudTile(&painter, &cloudTiles, 0, y,drawnTileSize, /*tileID*/ 2); // left bumps
-        drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 3); //right bumps
+        drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 3); // right bumps
         for (int xi = drawnTileSize; xi < width()-(drawnTileSize*2); xi+=drawnTileSize)
         {
             drawCloudTile(&painter, &cloudTiles, xi, y,drawnTileSize, /*tileID*/ 8); //fill
@@ -95,7 +96,7 @@ void Node::drawCloudBackground()
     }
     //bottom left
     x = 0;
-    y = std::min( y, height() - 20);
+    y = std::min(y, height() - drawnTileSize);
     drawCloudTile(&painter, &cloudTiles, x, y,drawnTileSize, /*tileID*/ 7);
     x = drawnTileSize;
     //bottom row
@@ -120,13 +121,16 @@ void Node::drawCloudTile(QPainter* painter, QPixmap* pixmap, int x, int y, int d
 
 void Node::paintEvent(QPaintEvent* /*event*/)
 {
+    const QRect nodeRect(1,1,this->width()-2, this->height()-2);
+    QPainter painter(this);
+    painter.setPen(Qt::red);
+    painter.drawRect(nodeRect);
     drawCloudBackground();
 }
 
 void Node::moveEvent(QMoveEvent */*event*/)
 {
     //note: this is also triggered on widget initialisation
-    qInfo("widget moved");
     m_nodeProperties.x = this->x();
     m_nodeProperties.y = this->y();
 }
@@ -201,5 +205,92 @@ void Node::removeChildID(int childNodeID)
             m_nodeProperties.children.erase(std::next(m_nodeProperties.children.begin(), index));
         }
         index++;
+    }
+}
+
+bool Node::mouseHoveringInResizeGrabSpace(int yPos)
+{
+    return yPos > this->height() - m_resizeGrabMargin;
+}
+
+bool Node::grabDistanceAchieved(QPoint pos)
+{
+    int grabDistY = std::abs(m_dragStart.y() - pos.y());
+    int grabDistX = std::abs(m_dragStart.x() - pos.x());
+    return (grabDistX > m_dragMargin) || (grabDistY > m_dragMargin) ;
+}
+
+void Node::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_mouseDown && resizeEnabled)
+    {
+      resizeToGrid(event->pos().y());
+    }
+    else if (mouseHoveringInResizeGrabSpace(event->pos().y()))
+    {
+        setCursor(QCursor(Qt::SizeVerCursor));
+    }
+    else
+    {
+        if (m_mouseDown)
+        {
+            if (resizeEnabled == false && m_moving == false && grabDistanceAchieved(event->pos()))
+            {
+                m_moving = true;
+                emit signalDragInitiation(this, event->position().toPoint());
+            }
+        }
+        else
+        {
+            setCursor(QCursor(Qt::ArrowCursor));
+            resizeEnabled = false;
+        }
+    }
+}
+
+
+void Node::mousePressEvent(QMouseEvent *event)
+{
+    bool leftButtonPressed(event->button() == Qt::LeftButton);
+    if (leftButtonPressed)
+    {
+        m_mouseDown = true;
+        if (event->pos().y() > this->height() - m_resizeGrabMargin)
+        {  //resizing down
+            resizeEnabled = true;
+        }
+        else
+        {
+            emit signalNodeClicked(this);
+            setSelected(true);
+            m_dragStart = event->position().toPoint();
+        }
+    }
+}
+
+void Node::mouseReleaseEvent(QMouseEvent */*event*/)
+{
+    resizeEnabled = false;
+    resetMoveCheckers();
+}
+
+void Node::resetMoveCheckers()
+{
+    m_mouseDown = false;
+    m_moving = false;
+    m_dragStart.setX(0);
+    m_dragStart.setY(0);
+}
+
+void Node::resizeToGrid(int newY)
+{
+    int delta = height() - newY;
+    int newHeight = height() - delta;
+    const bool snappingToGrid(newHeight % gridSize == 1);
+    const bool sizeInBounds(newHeight > gridSize*2 &&
+                            newHeight < gridSize*15);
+    if (snappingToGrid && sizeInBounds)
+    {
+        resize(width(), newHeight);
     }
 }
