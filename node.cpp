@@ -9,8 +9,8 @@ Node::Node(QWidget *parent) : QWidget(parent)
     m_text.setAlignment(Qt::AlignCenter);
     m_text.setText("text here");
     m_text.setAttribute(Qt::WA_TransparentForMouseEvents);//dont let user drag the label!!
-    setMinimumWidth(gridSize*15);
-    setMinimumHeight(gridSize*2);
+    setMinimumWidth(gridSize*6+1);
+    setMinimumHeight(gridSize*2+1);
 
     //turn on mouse tracking so mouseMoveEvent works
     setMouseTracking(true);
@@ -208,9 +208,43 @@ void Node::removeChildID(int childNodeID)
     }
 }
 
-bool Node::mouseHoveringInResizeGrabSpace(int yPos)
+bool Node::mouseHoveringInResizeGrabSpace(QPoint pos)
 {
-    return yPos > this->height() - m_resizeGrabMargin;
+    bool mouseOverGrabbyY(pos.y() > height() - m_resizeGrabMargin);
+    bool mouseOverGrabbyX(pos.x() > width() - m_resizeGrabMargin);
+    return mouseOverGrabbyY || mouseOverGrabbyX;
+}
+
+Node::ResizeSide Node::getResizeSide(QPoint pos)
+{
+    ResizeSide side(none);
+    if (pos.y() > height() - m_resizeGrabMargin)
+    {
+        side = bottom;
+    }
+    else if (pos.x() > width() - m_resizeGrabMargin)
+    {
+        side = right;
+    }
+    return side;
+}
+
+void Node::setResizeCursor(ResizeSide side)
+{
+    switch (side) {
+    case bottom:
+    {
+        setCursor(QCursor(Qt::SizeVerCursor));
+        break;
+    }
+    case right:
+    {
+        setCursor(QCursor(Qt::SizeHorCursor));
+        break;
+    }
+    case bottomright: break;//todo case bottomright: Qt::SizeFDiagCursor
+    case none: break;
+    }
 }
 
 bool Node::grabDistanceAchieved(QPoint pos)
@@ -226,9 +260,10 @@ void Node::mouseMoveEvent(QMouseEvent *event)
     {
       resizeToGrid(event->pos().y());
     }
-    else if (mouseHoveringInResizeGrabSpace(event->pos().y()))
+    else if (mouseHoveringInResizeGrabSpace(event->pos()))
     {
-        setCursor(QCursor(Qt::SizeVerCursor));
+        ResizeSide side = getResizeSide(event->pos());
+        setResizeCursor(side);
     }
     else
     {
@@ -255,7 +290,7 @@ void Node::mousePressEvent(QMouseEvent *event)
     if (leftButtonPressed)
     {
         m_mouseDown = true;
-        if (event->pos().y() > this->height() - m_resizeGrabMargin)
+        if (mouseHoveringInResizeGrabSpace(event->pos()))
         {  //resizing down
             resizeEnabled = true;
         }

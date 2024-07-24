@@ -20,6 +20,13 @@ class Node : public QWidget
 {
     Q_OBJECT
 public:
+    enum ResizeSide
+    {
+        none = 0,
+        bottom,
+        right,
+        bottomright
+    };
     explicit Node(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *event) override;
     void moveEvent(QMoveEvent *event) override;
@@ -60,7 +67,15 @@ public:
     void resizeToGrid(int newHeight);
 
     /** Is the mouse hovering over the grabby space of the node */
-    bool mouseHoveringInResizeGrabSpace(int yPos);
+    bool mouseHoveringInResizeGrabSpace(QPoint pos);
+
+    /**
+     * @return bottom or right, or none if mouse is not over any side grabs
+     * @todo bottomright needs implementing later
+     */
+    ResizeSide getResizeSide(QPoint pos);
+
+    void setResizeCursor(ResizeSide side);
 
     /** Has the mouse moved enough to be sure this is a drag gesture */
     bool grabDistanceAchieved(QPoint pos);
