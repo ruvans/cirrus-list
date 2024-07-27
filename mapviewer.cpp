@@ -79,6 +79,8 @@ void MapViewer::addChildForSelectedNode()
     //m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
     m_nodes.back()->show();
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
+    QObject::connect(m_nodes.back(), &Node::signalDragInitiation, this, &MapViewer::startNodeDrag);
+    QObject::connect(m_nodes.back(), &Node::signalNodeClicked, this, &MapViewer::nodeWasClicked);
     //tell the parent so it can draw a connecting line
     m_grabbedNode->addChildID(newNp.nodeID);
     repaint();//draw new line now

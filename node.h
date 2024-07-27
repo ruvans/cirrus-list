@@ -106,6 +106,8 @@ private:
     bool m_moving{false};
     bool m_mouseDown{false};
     ResizeSide sideClicked{none};
+    int m_minWidth, m_maxWidth;
+    int m_minHeight, m_maxHeight;
 };
 
 #endif // NODE_H

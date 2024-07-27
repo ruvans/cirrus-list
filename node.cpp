@@ -9,8 +9,14 @@ Node::Node(QWidget *parent) : QWidget(parent)
     m_text.setAlignment(Qt::AlignCenter);
     m_text.setText("text here");
     m_text.setAttribute(Qt::WA_TransparentForMouseEvents);//dont let user drag the label!!
-    setMinimumWidth(gridSize*6+1);
-    setMinimumHeight(gridSize*2+1);
+
+    m_minWidth = gridSize*6+1;
+    m_maxWidth = gridSize*35+1;
+    m_minHeight = gridSize*2+1;
+    m_maxHeight = gridSize*15+1;
+
+    setMinimumWidth(m_minWidth);
+    setMinimumHeight(m_minHeight);
 
     //turn on mouse tracking so mouseMoveEvent works
     setMouseTracking(true);
@@ -181,10 +187,16 @@ void Node::inputTextRowsChanged()
     if (lineCount > 1)
     {
         //resize box so user can see all their wonderful words
-        int margin(12);
-        int newHeight = this->height() + margin;
-        this->setFixedHeight(newHeight);
-        m_nodeProperties.height = newHeight;
+        //rightwards
+        if (width() < m_maxWidth/2 )
+        {
+            resizeNode(ResizeSide::right, width() + gridSize);
+        }
+        else
+        {
+            //downwards
+            resizeNode(ResizeSide::bottom, height() + gridSize);
+        }
     }
 }
 
@@ -294,17 +306,21 @@ void Node::mouseMoveEvent(QMouseEvent *event)
 
 void Node::mousePressEvent(QMouseEvent *event)
 {
+    qInfo("mouse down");
     bool leftButtonPressed(event->button() == Qt::LeftButton);
     if (leftButtonPressed)
     {
+        qInfo("left button");
         m_mouseDown = true;
         if (mouseHoveringInResizeGrabSpace(event->pos()))
         {  //resizing down
+            qInfo("resize");
             resizeEnabled = true;
             sideClicked = getResizeSide(event->pos());
         }
         else
         {
+            qInfo("node clicked");
             emit signalNodeClicked(this);
             setSelected(true);
             m_dragStart = event->position().toPoint();
@@ -333,7 +349,7 @@ void Node::resetMoveCheckers()
 void Node::resizeNode(ResizeSide side, int pos)
 {
     int delta(0), newHeight(0), newWidth(0);
-    bool snappingToGrid(false), sizeInBounds(false);
+    bool sizeInBounds(false);
 
     switch (side)
     {
@@ -341,20 +357,20 @@ void Node::resizeNode(ResizeSide side, int pos)
         delta = height() - pos;
         newWidth = width();
         newHeight = height() - delta;
-        snappingToGrid = true;//newSize % gridSize == 1;
-        sizeInBounds = newHeight > gridSize*2 &&  newHeight < gridSize*15;
+        sizeInBounds = newHeight > m_minHeight &&  newHeight < m_maxHeight;
         break;
     case right:
         delta = width() - pos;
         newWidth = width() - delta;
         newHeight = height();
-        snappingToGrid = true;//newSize % gridSize == 1;
-        sizeInBounds = newWidth > gridSize*4 &&  newWidth < gridSize*35;
+        sizeInBounds = newWidth > m_minWidth &&  newWidth < m_maxWidth;
         break;
     case bottomright: break;
     case none: break;
     }
-    if (snappingToGrid && sizeInBounds) resize(newWidth, newHeight);
+    if (sizeInBounds) resize(newWidth, newHeight);
+    m_nodeProperties.height = height();
+    m_nodeProperties.width = width();
 }
 
 
@@ -365,4 +381,6 @@ void Node::snapResizeToGrid()
     int widthToGrid = (wx * gridSize) +1;
     int heightToGrid = (hx * gridSize) +1;
     resize(widthToGrid, heightToGrid);
+    m_nodeProperties.height = height();
+    m_nodeProperties.width = width();
 }
