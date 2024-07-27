@@ -64,7 +64,9 @@ public:
     const int gridSize{20};
 
     /** Resize the node snapping to closest grid space*/
-    void resizeToGrid(int newHeight);
+    void snapResizeToGrid();
+
+    void resizeNode(ResizeSide side, int newSize);
 
     /** Is the mouse hovering over the grabby space of the node */
     bool mouseHoveringInResizeGrabSpace(QPoint pos);
@@ -103,7 +105,7 @@ private:
     QPoint m_dragStart{0,0};
     bool m_moving{false};
     bool m_mouseDown{false};
-    const int m_minimumWidth{100};
+    ResizeSide sideClicked{none};
 };
 
 #endif // NODE_H

@@ -258,7 +258,15 @@ void Node::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_mouseDown && resizeEnabled)
     {
-      resizeToGrid(event->pos().y());
+        if (sideClicked == ResizeSide::bottom)
+        {
+             resizeNode(sideClicked, event->pos().y());
+        }
+        else if (sideClicked == ResizeSide::right)
+        {
+            resizeNode(sideClicked, event->pos().x());
+        }
+
     }
     else if (mouseHoveringInResizeGrabSpace(event->pos()))
     {
@@ -293,6 +301,7 @@ void Node::mousePressEvent(QMouseEvent *event)
         if (mouseHoveringInResizeGrabSpace(event->pos()))
         {  //resizing down
             resizeEnabled = true;
+            sideClicked = getResizeSide(event->pos());
         }
         else
         {
@@ -305,6 +314,10 @@ void Node::mousePressEvent(QMouseEvent *event)
 
 void Node::mouseReleaseEvent(QMouseEvent */*event*/)
 {
+    if (resizeEnabled)
+    {
+        snapResizeToGrid();
+    }
     resizeEnabled = false;
     resetMoveCheckers();
 }
@@ -317,15 +330,39 @@ void Node::resetMoveCheckers()
     m_dragStart.setY(0);
 }
 
-void Node::resizeToGrid(int newY)
+void Node::resizeNode(ResizeSide side, int pos)
 {
-    int delta = height() - newY;
-    int newHeight = height() - delta;
-    const bool snappingToGrid(newHeight % gridSize == 1);
-    const bool sizeInBounds(newHeight > gridSize*2 &&
-                            newHeight < gridSize*15);
-    if (snappingToGrid && sizeInBounds)
+    int delta(0), newHeight(0), newWidth(0);
+    bool snappingToGrid(false), sizeInBounds(false);
+
+    switch (side)
     {
-        resize(width(), newHeight);
+    case bottom:
+        delta = height() - pos;
+        newWidth = width();
+        newHeight = height() - delta;
+        snappingToGrid = true;//newSize % gridSize == 1;
+        sizeInBounds = newHeight > gridSize*2 &&  newHeight < gridSize*15;
+        break;
+    case right:
+        delta = width() - pos;
+        newWidth = width() - delta;
+        newHeight = height();
+        snappingToGrid = true;//newSize % gridSize == 1;
+        sizeInBounds = newWidth > gridSize*4 &&  newWidth < gridSize*35;
+        break;
+    case bottomright: break;
+    case none: break;
     }
+    if (snappingToGrid && sizeInBounds) resize(newWidth, newHeight);
+}
+
+
+void Node::snapResizeToGrid()
+{
+    int wx = width() / gridSize;
+    int hx = height() / gridSize;
+    int widthToGrid = (wx * gridSize) +1;
+    int heightToGrid = (hx * gridSize) +1;
+    resize(widthToGrid, heightToGrid);
 }
