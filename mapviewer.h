@@ -64,7 +64,7 @@ private:
     std::unique_ptr<QLabel> m_mainLabel;
     std::vector<Node*>m_nodes;
     QPoint m_lastMousePoint;
-    Node *m_grabbedNode;
+    Node *m_selectedNode;
     QPoint m_grabbedHotSpot;
     MapDataManager m_currentMap;
 };

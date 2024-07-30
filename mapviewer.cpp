@@ -46,20 +46,20 @@ void MapViewer::dragMoveEvent(QDragMoveEvent *event)
 void MapViewer::dropEvent(QDropEvent *event)
 {
     qInfo("dropEvent");
-    if (m_grabbedNode == nullptr)
+    if (m_selectedNode == nullptr)
     {
         return;
     }
 
-    if (m_grabbedNode->cursor().shape() == Qt::ArrowCursor)
+    if (m_selectedNode->cursor().shape() == Qt::ArrowCursor)
     {
         QPointF newLocation = event->position() - m_grabbedHotSpot;
-        m_grabbedNode->move(newLocation.x() , newLocation.y());
-        m_grabbedNode->resetMoveCheckers();
+        m_selectedNode->move(newLocation.x() , newLocation.y());
+        m_selectedNode->resetMoveCheckers();
         repaint();
     }
 
-    m_currentMap.updateNodeData(m_grabbedNode->getNodeProperties());
+    m_currentMap.updateNodeData(m_selectedNode->getNodeProperties());
 }
 
 
@@ -70,9 +70,9 @@ void MapViewer::dragEnterEvent(QDragEnterEvent *event)
 
 void MapViewer::addChildForSelectedNode()
 {
-    if (m_grabbedNode == nullptr) {return;}
+    if (m_selectedNode == nullptr) {return;}
 
-    int parentID = m_grabbedNode->getNodeProperties()->nodeID;
+    int parentID = m_selectedNode->getNodeProperties()->nodeID;
     NodeProperties newNp = m_currentMap.addNewChildNode(parentID);
     m_nodes.push_back(new Node(this));
     m_nodes.back()->setNodeProperties(newNp);
@@ -82,27 +82,27 @@ void MapViewer::addChildForSelectedNode()
     QObject::connect(m_nodes.back(), &Node::signalDragInitiation, this, &MapViewer::startNodeDrag);
     QObject::connect(m_nodes.back(), &Node::signalNodeClicked, this, &MapViewer::nodeWasClicked);
     //tell the parent so it can draw a connecting line
-    m_grabbedNode->addChildID(newNp.nodeID);
+    m_selectedNode->addChildID(newNp.nodeID);
     repaint();//draw new line now
 
-    m_grabbedNode->setSelected(false);
+    m_selectedNode->setSelected(false);
     m_nodes.back()->setSelected(true);
     m_nodes.back()->showTextInputBox();
 }
 
 void MapViewer::deleteSelectedNode()
 {
-    if (m_grabbedNode == nullptr) {return;}
+    if (m_selectedNode == nullptr) {return;}
 
-    const int ripID = m_grabbedNode->getNodeProperties()->nodeID;
+    const int ripID = m_selectedNode->getNodeProperties()->nodeID;
     //collateral damage
     std::vector<int>childNodeIDs = m_currentMap.getChildrenIDsRecursive(ripID);
     //get rid of the dead nodes
     for(int i = 0; i < (int)m_nodes.size(); i++)
     {
-        if (m_grabbedNode == m_nodes.at(i))
+        if (m_selectedNode == m_nodes.at(i))
         {
-            m_grabbedNode->hide();
+            m_selectedNode->hide();
             m_nodes.erase(std::next(m_nodes.begin(), i));
             break;
         }
@@ -193,7 +193,7 @@ Node* MapViewer::getNodeObject(int nodeID)
 
 void MapViewer::startNodeDrag(Node* draggedNode, QPoint mousePos)
 {
-    m_grabbedNode = draggedNode;
+    m_selectedNode = draggedNode;
     m_grabbedHotSpot = mousePos;
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
@@ -212,6 +212,7 @@ void MapViewer::nodeWasClicked(Node* nodeClicked)
         bool nodeNeedsUnselecting = node != nodeClicked && node->isSelected == true;
         if (nodeNeedsUnselecting) node->setSelected(false);
     }
+    m_selectedNode = nodeClicked;
     emit nodeSelectionChanged(/*active*/true);
 }
 
