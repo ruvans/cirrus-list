@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":resources/cirrusmap_appicon.ico"));
+
     //connect buttons and slots
     //node that some older buttons have been set via the form
     connect(ui->addChildButton, SIGNAL(clicked()), this, SLOT(on_createChildNode_clicked()));

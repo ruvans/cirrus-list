@@ -44,7 +44,8 @@ resources.files = \
     resources/cloud_border_spritesheet.png\
     resources/cloud_border_spritesheet_root.png\
     resources/cloud_border_spritesheet_root_selected.png\
-    resources/cloud_border_spritesheet_selected.png
+    resources/cloud_border_spritesheet_selected.png\
+    resources/cirrusmap_appicon.ico
 
 
 
