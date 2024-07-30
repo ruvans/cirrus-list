@@ -127,10 +127,6 @@ void Node::drawCloudTile(QPainter* painter, QPixmap* pixmap, int x, int y, int d
 
 void Node::paintEvent(QPaintEvent* /*event*/)
 {
-    const QRect nodeRect(1,1,this->width()-2, this->height()-2);
-    QPainter painter(this);
-    painter.setPen(Qt::red);
-    painter.drawRect(nodeRect);
     drawCloudBackground();
 }
 
