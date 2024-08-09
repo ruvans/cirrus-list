@@ -367,6 +367,7 @@ void Node::resizeNode(ResizeSide side, int pos)
     if (sizeInBounds) resize(newWidth, newHeight);
     m_nodeProperties.height = height();
     m_nodeProperties.width = width();
+    emit nodeWasResized();
 }
 
 
@@ -379,4 +380,5 @@ void Node::snapResizeToGrid()
     resize(widthToGrid, heightToGrid);
     m_nodeProperties.height = height();
     m_nodeProperties.width = width();
+    emit nodeWasResized();
 }

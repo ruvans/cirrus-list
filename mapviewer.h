@@ -54,11 +54,14 @@ public:
      */
     void nodeWasClicked(Node* node);
 
+    void refreshConnectingLines();
+
 signals:
     void nodeSelectionChanged(bool active);
 
 
 private:
+    QPoint getBestStartingPositionForChild(Node* parentNode);
     void drawConnectingLines();
     inline Node* getNodeObject(int nodeID);
     std::unique_ptr<QLabel> m_mainLabel;

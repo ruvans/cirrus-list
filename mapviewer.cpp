@@ -16,9 +16,11 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
         m_nodes.push_back(new Node(this));
         m_nodes.back()->setNodeProperties(nodeData);
         m_nodes.back()->setGeometry(nodeData.x, nodeData.y, nodeData.width, nodeData.height);
+        //todo move this all and the dupe code in addChild into its own function
         QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
         QObject::connect(m_nodes.back(), &Node::signalDragInitiation, this, &MapViewer::startNodeDrag);
         QObject::connect(m_nodes.back(), &Node::signalNodeClicked, this, &MapViewer::nodeWasClicked);
+        QObject::connect(m_nodes.back(), &Node::nodeWasResized, this, &MapViewer::refreshConnectingLines);
     }
 
     setAcceptDrops(true);
@@ -74,13 +76,16 @@ void MapViewer::addChildForSelectedNode()
 
     int parentID = m_selectedNode->getNodeProperties()->nodeID;
     NodeProperties newNp = m_currentMap.addNewChildNode(parentID);
+    QPoint childStarterPos = getBestStartingPositionForChild(m_selectedNode);
+    newNp.x = childStarterPos.x();
+    newNp.y = childStarterPos.y();
     m_nodes.push_back(new Node(this));
     m_nodes.back()->setNodeProperties(newNp);
-    //m_nodes.back()->setFixedSize(200,40);//todo width and height needs to be dynamic
     m_nodes.back()->show();
     QObject::connect(m_nodes.back(), &Node::nodePropertiesChanged, this, &MapViewer::updataDataForNode);
     QObject::connect(m_nodes.back(), &Node::signalDragInitiation, this, &MapViewer::startNodeDrag);
     QObject::connect(m_nodes.back(), &Node::signalNodeClicked, this, &MapViewer::nodeWasClicked);
+    QObject::connect(m_nodes.back(), &Node::nodeWasResized, this, &MapViewer::refreshConnectingLines);
     //tell the parent so it can draw a connecting line
     m_selectedNode->addChildID(newNp.nodeID);
     repaint();//draw new line now
@@ -140,6 +145,11 @@ void MapViewer::updataDataForNode(Node* node)
     m_currentMap.updateNodeData(node->getNodeProperties());
 }
 
+void MapViewer::refreshConnectingLines()
+{
+    update();
+}
+
 void MapViewer::paintEvent(QPaintEvent */*event*/)
 {
     drawConnectingLines();
@@ -163,15 +173,15 @@ void MapViewer::drawConnectingLines()
         }
         //node has kids, draw lines
         QPoint lineStart, lineEnd;
-        lineStart.setX(node->getNodeProperties()->x + (node->width()/2));
-        lineStart.setY(node->getNodeProperties()->y + (node->height()/2));
+        lineStart.setX(node->x() + (node->width()/2));
+        lineStart.setY(node->y() + (node->height()/2));
         for (auto childID : kids)
         {
             Node* childNode = getNodeObject(childID);
             if (childNode != nullptr)
             {
-                lineEnd.setX(childNode->getNodeProperties()->x + (node->width()/2));
-                lineEnd.setY(childNode->getNodeProperties()->y + (node->height()/2));
+                lineEnd.setX(childNode->x() + (childNode->width()/2));
+                lineEnd.setY(childNode->y() + (childNode->height()/2));
                 painter.drawLine(lineStart.x(), lineStart.y(), lineEnd.x(), lineEnd.y());
             }
         }
@@ -230,5 +240,14 @@ void MapViewer::mousePressEvent(QMouseEvent */*event*/)
     unselectAllNodes();
 }
 
+
+QPoint MapViewer::getBestStartingPositionForChild(Node* parentNode)
+{
+    NodeProperties* nodeProps = parentNode->getNodeProperties();
+    QPoint pos;
+    pos.setX(nodeProps->x + 10);
+    pos.setY(nodeProps->y + 10);
+    return pos;
+}
 //https://stackoverflow.com/questions/18299077/dragging-a-qwidget-in-qt-5
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-fridgemagnets-example.html

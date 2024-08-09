@@ -85,6 +85,7 @@ signals:
     void nodePropertiesChanged(Node *node);
     void signalDragInitiation(Node* node, QPoint mousePos);
     void signalNodeClicked(Node* node);
+    void nodeWasResized();
 
 public slots:
     // Attached to the vert slider so I can find out when a
