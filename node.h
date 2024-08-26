@@ -23,7 +23,9 @@ public:
     enum ResizeSide
     {
         none = 0,
+        top,
         bottom,
+        left,
         right,
         bottomright
     };

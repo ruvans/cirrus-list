@@ -218,9 +218,11 @@ void Node::removeChildID(int childNodeID)
 
 bool Node::mouseHoveringInResizeGrabSpace(QPoint pos)
 {
-    bool mouseOverGrabbyY(pos.y() > height() - m_resizeGrabMargin);
-    bool mouseOverGrabbyX(pos.x() > width() - m_resizeGrabMargin);
-    return mouseOverGrabbyY || mouseOverGrabbyX;
+    bool mouseOverGrabbyRight(pos.y() > height() - m_resizeGrabMargin);
+    bool mouseOverGrabbyBottom(pos.x() > width() - m_resizeGrabMargin);
+    bool mouseOverGrabbyLeft(pos.y() < m_resizeGrabMargin);
+    bool mouseOverGrabbyTop(pos.x() < m_resizeGrabMargin);
+    return mouseOverGrabbyRight || mouseOverGrabbyBottom || mouseOverGrabbyLeft || mouseOverGrabbyTop;
 }
 
 Node::ResizeSide Node::getResizeSide(QPoint pos)
@@ -234,6 +236,14 @@ Node::ResizeSide Node::getResizeSide(QPoint pos)
     {
         side = right;
     }
+    else if (pos.y() < m_resizeGrabMargin)
+    {
+        side = top;
+    }
+    else if (pos.x() < m_resizeGrabMargin)
+    {
+        side = left;
+    }
     return side;
 }
 
@@ -241,15 +251,18 @@ void Node::setResizeCursor(ResizeSide side)
 {
     switch (side) {
     case bottom:
+    case top:
     {
         setCursor(QCursor(Qt::SizeVerCursor));
         break;
     }
+    case left:
     case right:
     {
         setCursor(QCursor(Qt::SizeHorCursor));
         break;
     }
+
     case bottomright: break;//todo case bottomright: Qt::SizeFDiagCursor
     case none: break;
     }
@@ -266,15 +279,23 @@ void Node::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_mouseDown && resizeEnabled)
     {
-        if (sideClicked == ResizeSide::bottom)
+        switch(sideClicked)
         {
-             resizeNode(sideClicked, event->pos().y());
-        }
-        else if (sideClicked == ResizeSide::right)
-        {
+        case bottom:
+            resizeNode(sideClicked, event->pos().y());
+            break;
+        case right:
             resizeNode(sideClicked, event->pos().x());
+            break;
+        case top:
+            resizeNode(sideClicked, event->pos().y());
+            break;
+        case left:
+            resizeNode(sideClicked, event->pos().x());
+            break;
+        case bottomright: break;//todo
+        case none: break;
         }
-
     }
     else if (mouseHoveringInResizeGrabSpace(event->pos()))
     {
@@ -344,29 +365,47 @@ void Node::resetMoveCheckers()
 
 void Node::resizeNode(ResizeSide side, int pos)
 {
-    int delta(0), newHeight(0), newWidth(0);
+    int delta(0), newHeight(height()), newWidth(width());
+    int newY(y()), newX(x());
     bool sizeInBounds(false);
 
     switch (side)
     {
-    case bottom:
-        delta = height() - pos;
-        newWidth = width();
+    case top:
+        delta = pos;
+        newY = y() + delta;
         newHeight = height() - delta;
         sizeInBounds = newHeight > m_minHeight &&  newHeight < m_maxHeight;
+        break;
+    case bottom:
+        delta = height() - pos;
+        newHeight = height() - delta;
+        sizeInBounds = newHeight > m_minHeight &&  newHeight < m_maxHeight;
+        break;
+    case left:
+        delta = pos;
+        newX = x() + delta;
+        newWidth = width() - delta;
+        sizeInBounds = newWidth > m_minWidth &&  newWidth < m_maxWidth;
         break;
     case right:
         delta = width() - pos;
         newWidth = width() - delta;
-        newHeight = height();
         sizeInBounds = newWidth > m_minWidth &&  newWidth < m_maxWidth;
         break;
-    case bottomright: break;
+    case bottomright: break;//todo
     case none: break;
     }
-    if (sizeInBounds) resize(newWidth, newHeight);
-    m_nodeProperties.height = height();
-    m_nodeProperties.width = width();
+
+    if (sizeInBounds)
+    {
+        setGeometry(newX, newY, newWidth, newHeight);
+        m_nodeProperties.height = height();
+        m_nodeProperties.width = width();
+        m_nodeProperties.x = newX;
+        m_nodeProperties.y = newY;
+    }
+
     emit nodeWasResized();
 }
 
