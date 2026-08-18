@@ -24,6 +24,9 @@ MapViewer::MapViewer(QString const& mapPath, QWidget *parent) :
     }
 
     setAcceptDrops(true);
+    setAutoFillBackground(true);
+//setStyleSheet("* {color: qlineargradient(spread:pad, x1:0 y1:0, x2:1 y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));"
+//                  "background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 cyan, stop:1 blue);}");
 
 }
 
@@ -152,6 +155,12 @@ void MapViewer::refreshConnectingLines()
 
 void MapViewer::paintEvent(QPaintEvent */*event*/)
 {
+    //draw background from stylesheet
+    QStyleOption opt;
+    opt.initFrom(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
     drawConnectingLines();
 }
 
@@ -243,11 +252,55 @@ void MapViewer::mousePressEvent(QMouseEvent */*event*/)
 
 QPoint MapViewer::getBestStartingPositionForChild(Node* parentNode)
 {
-    NodeProperties* nodeProps = parentNode->getNodeProperties();
-    QPoint pos;
-    pos.setX(nodeProps->x + 10);
-    pos.setY(nodeProps->y + 10);
-    return pos;
+    int distance = 5;
+    //function function
+    auto emptySpace = [&](QRect newNodePos){
+        auto childNodes = parentNode->getNodeProperties()->children;
+        //If no kids, assume it is clear
+        if (childNodes.size()<1) return true;
+        //go through childnodes and do something
+        for (int childNode : childNodes)
+        {
+            auto node = m_nodes.at(childNode);
+            QRect existingNodeRect(node->pos(), node->size());
+            bool clear = ! existingNodeRect.intersects(newNodePos);
+            if (clear) return true;
+        }
+        return false;
+    };
+
+    auto parentProps = parentNode->getNodeProperties();
+    QRect parentPos(parentProps->x, parentProps->y, parentProps->width, parentProps->height);
+
+    //diag down+left?
+    QRect newPos = parentPos;
+    newPos.moveLeft(parentPos.right() + distance);
+    newPos.moveTop(parentPos.bottom() + distance);
+    if (emptySpace(newPos))
+    {
+        return QPoint(newPos.x(), newPos.y());
+    }
+
+    //diag down+right?
+    newPos = parentPos;
+    newPos.moveRight(parentPos.left() + distance);
+    newPos.moveTop(parentPos.bottom() + distance);
+    if (emptySpace(newPos))
+    {
+        return QPoint(newPos.x(), newPos.y());
+    }
+
+    //diag up+right?
+    newPos = parentPos;
+
+
+    //diag up+left?
+
+    //todo starting point is just an offset right now. Make it be in a clear space around the parent
+    //const int posX = parentProps->x + parentProps->width + 5;
+    //const int posY = parentProps->y + parentProps->height + 5;
+
+    return QPoint(newPos.x(), newPos.y());
 }
 //https://stackoverflow.com/questions/18299077/dragging-a-qwidget-in-qt-5
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-fridgemagnets-example.html

@@ -11,7 +11,7 @@
 #include <QPainter>
 #include <QMessageLogger>
 #include <QColor>
-
+#include <QStyleOption>
 
 #include "mapmanager.h"
 #include "mapdatamanager.h"

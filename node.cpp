@@ -51,6 +51,7 @@ void Node::setNodeProperties(NodeProperties properties)
 {
     m_nodeProperties = properties;
     m_text.setText(properties.nodeText);
+    this->move(properties.x, properties.y);
 }
 
 NodeProperties* Node::getNodeProperties()
@@ -73,7 +74,7 @@ void Node::drawCloudBackground()
     }
     else
     {
-        cloudBorder = isSelected? ":resources/cloud_border_spritesheet_selected.png" : ":resources/cloud_border_spritesheet.png";
+        cloudBorder = isSelected? ":resources/cloud_border_spritesheet_selected2.png" : ":resources/cloud_border_spritesheet2.png";
     }
     QPixmap cloudTiles(cloudBorder);
 

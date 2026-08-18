@@ -42,9 +42,11 @@ resources.files = \
     resources/button_deletecloud.png\
     resources/button_deletecloud_down.png\
     resources/cloud_border_spritesheet.png\
+    resources/cloud_border_spritesheet2.png\
     resources/cloud_border_spritesheet_root.png\
     resources/cloud_border_spritesheet_root_selected.png\
     resources/cloud_border_spritesheet_selected.png\
+    resources/cloud_border_spritesheet_selected2.png\
     resources/cirrusmap_appicon.ico
 
 

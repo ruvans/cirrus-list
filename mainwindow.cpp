@@ -26,10 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
                 "QMenuBar { background-color: #7BB1E4; }"
                 "QWidget#scrollAreaWidgetContents { background-color: transparent; }"//otherwise hard to colour main widgets
                 "QScrollArea { background-color: #BDDFFE; }"
-                "QWidget#mapArea { background-color: red; }"//this makes the scrollarea colour show properly(????)
-                                                            //nothing is showing up red, but if this isn't here then the blue I want goes away???
+                "QWidget#mapArea { background: qlineargradient( x1:0 y1:0, x2:0.1 y2:1, stop:0 #bddffe, stop:0.7 #bdc4fe, stop:1 #c5baed); }"
                 );
-
+//https://doc.qt.io/qt-6/qgradient.html#CoordinateMode-enum
+    //background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+    //linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(189,223,254,1) 48%, rgba(189,254,207,1) 100%)
     showMapLoadDisplay();
 }
 
